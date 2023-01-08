@@ -1,0 +1,23 @@
+app:
+  project_name: fast-api-menu
+  description: fast-api-menu project's description
+  version: 0.1.0
+  api_doc_prefix: /api/v1
+  debug: true
+  db_exclude_tables: []
+
+postgres:
+  host: localhost
+  port: 5432
+  dbname: my_menu
+  user: my_menu
+  password: my_menu
+  async_dsn: postgresql+asyncpg://my_menu:my_menu@localhost:5432/my_menu
+
+redis:
+  host: localhost
+  port: 6379
+  db: 0
+  encoding: utf-8
+  cache_expire_time: 300 # 5 минут
+  max_connections: 10

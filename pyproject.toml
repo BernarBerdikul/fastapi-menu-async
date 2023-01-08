@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "fast-api-menu"
+version = "0.1.0"
+description = ""
+authors = ["Bernar Berdikul <bernar.berdikul@mail.ru>"]
+readme = "README.md"
+packages = [{include = "fast_api_menu"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.88.0"
+sqlmodel = "^0.0.8"
+uvicorn = "^0.20.0"
+pyaml-env = "^1.2.1"
+alembic = "^1.9.1"
+pytest = "^7.2.0"
+pytest-asyncio = "^0.20.3"
+httpx = "^0.23.3"
+aioredis = "^2.0.1"
+orjson = "^3.8.4"
+asyncpg = "^0.27.0"
+
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^2.21.0"
+isort = "^5.11.4"
+black = "^22.12.0"
+flake8 = "^6.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
