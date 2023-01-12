@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Optional, Union, Any, Dict
+from typing import Any, Dict, Optional, Union
 
 from src.db.cache import AbstractCache
 

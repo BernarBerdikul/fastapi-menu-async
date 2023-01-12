@@ -3,8 +3,8 @@ from typing import Optional, Union
 
 from aioredis import Redis
 
-from src.db.cache import AbstractCache
 from src import settings
+from src.db.cache import AbstractCache
 
 __all__ = ('RedisCache',)
 

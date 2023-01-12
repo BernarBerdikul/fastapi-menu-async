@@ -4,12 +4,12 @@ import uuid as uuid_pkg
 from fastapi import APIRouter, Depends
 
 from src.api.v1.schemas import StatusMessage
-from src.models import DishList, DishRead, DishCreate, DishUpdate
 from src.api.v1.services import DishService, get_dish_service
+from src.models import DishCreate, DishList, DishRead, DishUpdate
 
 router = APIRouter(
     prefix='/api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes',
-    tags=['dishes']
+    tags=['dishes'],
 )
 
 
@@ -86,4 +86,4 @@ async def dish_delete(
     dish_service: DishService = Depends(get_dish_service),
 ):
     is_deleted: bool = await dish_service.delete(dish_id=dish_id)
-    return StatusMessage(status=is_deleted, message="The dish has been deleted")
+    return StatusMessage(status=is_deleted, message='The dish has been deleted')

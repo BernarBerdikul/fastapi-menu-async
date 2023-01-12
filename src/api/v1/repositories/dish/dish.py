@@ -1,10 +1,12 @@
 import uuid as uuid_pkg
 from typing import Optional
+
 from sqlalchemy import select
+
 from src.api.v1.repositories.dish import AbstractDishRepository
 from src.models import Dish, DishCreate, DishUpdate
 
-__all__ = ("DishRepository",)
+__all__ = ('DishRepository',)
 
 
 class DishRepository(AbstractDishRepository):

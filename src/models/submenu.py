@@ -1,7 +1,8 @@
 import uuid as uuid_pkg
 from typing import Optional
 
-from sqlmodel import Field, SQLModel, Relationship
+from sqlmodel import Field, Relationship, SQLModel
+
 from src.models.mixins import TimestampMixin, UUIDMixin
 
 __all__ = (
@@ -31,7 +32,7 @@ class Submenu(TimestampMixin, SubmenuBase, table=True):
     __tablename__ = 'submenu'
 
     is_removed: bool = Field(
-        title="Флаг удаления",
+        title='Флаг удаления',
         default=False,
         nullable=False,
     )
@@ -47,8 +48,8 @@ class Submenu(TimestampMixin, SubmenuBase, table=True):
     submenu_dishes: list['Dish'] = Relationship(
         back_populates='submenu',
         sa_relationship_kwargs={
-            "uselist": True,
-            "cascade": "all, delete",
+            'uselist': True,
+            'cascade': 'all, delete',
         },
     )
 
@@ -70,10 +71,10 @@ class SubmenuCreate(SubmenuBase):
 
     class Config:
         schema_extra = {
-            "example": {
-                "title": "My submenu",
-                "description": "My submenu's description",
-            }
+            'example': {
+                'title': 'My submenu',
+                'description': 'My submenu description',
+            },
         }
 
 
@@ -89,8 +90,8 @@ class SubmenuUpdate(SubmenuBase):
 
     class Config:
         schema_extra = {
-            "example": {
-                "title": "My updated submenu",
-                "description": "My updated submenu's description",
-            }
+            'example': {
+                'title': 'My updated submenu',
+                'description': 'My updated submenu description',
+            },
         }

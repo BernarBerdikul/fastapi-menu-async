@@ -1,4 +1,4 @@
-from .mixins import *
-from .menu import *
-from .submenu import *
 from .dish import *
+from .menu import *
+from .mixins import *
+from .submenu import *

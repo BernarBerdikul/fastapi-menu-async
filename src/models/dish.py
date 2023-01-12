@@ -2,7 +2,8 @@ import uuid as uuid_pkg
 from typing import Optional
 
 from pydantic import condecimal
-from sqlmodel import Field, SQLModel, Relationship
+from sqlmodel import Field, Relationship, SQLModel
+
 from src.models.mixins import TimestampMixin, UUIDMixin
 
 __all__ = (
@@ -36,7 +37,7 @@ class Dish(TimestampMixin, DishBase, table=True):
     __tablename__ = 'dish'
 
     is_removed: bool = Field(
-        title="Флаг удаления",
+        title='Флаг удаления',
         default=False,
         nullable=False,
     )
@@ -76,11 +77,11 @@ class DishCreate(DishBase):
 
     class Config:
         schema_extra = {
-            "example": {
-                "title": "My dish",
-                "description": "My dish's description",
-                "price": 1000.00,
-            }
+            'example': {
+                'title': 'My dish',
+                'description': "My dish's description",
+                'price': 1000.00,
+            },
         }
 
 
@@ -102,9 +103,9 @@ class DishUpdate(DishBase):
 
     class Config:
         schema_extra = {
-            "example": {
-                "title": "My updated dish",
-                "description": "My updated dish's description",
-                "price": 1200.00,
-            }
+            'example': {
+                'title': 'My updated dish',
+                'description': "My updated dish's description",
+                'price': 1200.00,
+            },
         }

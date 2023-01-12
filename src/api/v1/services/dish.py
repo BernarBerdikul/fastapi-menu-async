@@ -7,10 +7,10 @@ from fastapi import Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.api.v1.repositories.dish import DishRepository
+from src.api.v1.services import ServiceMixin
 from src.db.cache import AbstractCache, get_cache
 from src.db.db import get_async_session
-from src.models import DishList, DishRead, DishUpdate, DishCreate
-from src.api.v1.services import ServiceMixin
+from src.models import DishCreate, DishList, DishRead, DishUpdate
 
 __all__ = (
     'DishService',
@@ -21,7 +21,7 @@ __all__ = (
 @dataclass
 class DishService(ServiceMixin):
     repository: DishRepository
-    cache_key: str = field(default="dish-list")
+    cache_key: str = field(default='dish-list')
 
     async def get_list(self, submenu_id: uuid_pkg.UUID) -> DishList:
         """Получить список блюд."""
@@ -40,7 +40,9 @@ class DishService(ServiceMixin):
 
         dish = await self.repository.get(dish_id=dish_id)
         if not dish:
-            raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="dish not found")
+            raise HTTPException(
+                status_code=HTTPStatus.NOT_FOUND, detail='dish not found',
+            )
 
         if serialized_dish := DishRead.from_orm(dish):
             await self.cache.set(name=f'{dish_id}', value=serialized_dish.json())
@@ -58,7 +60,9 @@ class DishService(ServiceMixin):
         """Обновить блюдо."""
         updated_dish = await self.repository.update(dish_id=dish_id, data=data)
         if not updated_dish:
-            raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="dish not found")
+            raise HTTPException(
+                status_code=HTTPStatus.NOT_FOUND, detail='dish not found',
+            )
         await self.cache.delete(name=f'{dish_id}')
         await self.cache.delete(name=self.cache_key)
         return DishRead.from_orm(updated_dish)

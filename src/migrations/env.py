@@ -1,5 +1,4 @@
 import asyncio
-import json
 from logging.config import fileConfig
 
 from alembic import context
@@ -20,10 +19,8 @@ if config.config_file_name is not None:
 
 # add your model's MetaData object here
 # for 'autogenerate' support
-from src.models import (  # noqa: 'autogenerate' support
-    Menu,
-    Dish,
-)
+from src.models import Dish, Menu  # noqa: 'autogenerate' support
+
 # target_metadata = mymodel.Base.metadata
 target_metadata = SQLModel.metadata
 

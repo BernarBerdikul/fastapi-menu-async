@@ -7,10 +7,16 @@ from fastapi import Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.api.v1.repositories.submenu import SubmenuRepository
+from src.api.v1.services import ServiceMixin
 from src.db.cache import AbstractCache, get_cache
 from src.db.db import get_async_session
-from src.models import SubmenuList, SubmenuDetail, SubmenuUpdate, SubmenuRead, SubmenuCreate
-from src.api.v1.services import ServiceMixin
+from src.models import (
+    SubmenuCreate,
+    SubmenuDetail,
+    SubmenuList,
+    SubmenuRead,
+    SubmenuUpdate,
+)
 
 __all__ = (
     'SubmenuService',
@@ -21,7 +27,7 @@ __all__ = (
 @dataclass
 class SubmenuService(ServiceMixin):
     repository: SubmenuRepository
-    cache_key: str = field(default="submenu-list")
+    cache_key: str = field(default='submenu-list')
 
     async def get_list(self, menu_id: uuid_pkg.UUID) -> SubmenuList:
         """Получить список подменю."""
@@ -40,7 +46,9 @@ class SubmenuService(ServiceMixin):
 
         submenu = await self.repository.get(submenu_id=submenu_id)
         if not submenu:
-            raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="submenu not found")
+            raise HTTPException(
+                status_code=HTTPStatus.NOT_FOUND, detail='submenu not found',
+            )
 
         if serialized_submenu := SubmenuDetail.from_orm(submenu):
             await self.cache.set(name=f'{submenu_id}', value=serialized_submenu.json())
@@ -57,7 +65,9 @@ class SubmenuService(ServiceMixin):
         """Обновить подменю."""
         updated_submenu = await self.repository.update(submenu_id=submenu_id, data=data)
         if not updated_submenu:
-            raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="submenu not found")
+            raise HTTPException(
+                status_code=HTTPStatus.NOT_FOUND, detail='submenu not found',
+            )
         await self.cache.delete(name=f'{submenu_id}')
         await self.cache.delete(name=self.cache_key)
         return SubmenuRead.from_orm(updated_submenu)

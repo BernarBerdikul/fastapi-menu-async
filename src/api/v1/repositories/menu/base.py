@@ -1,10 +1,12 @@
 import uuid as uuid_pkg
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from src.models import MenuCreate, MenuUpdate
 
-__all__ = ("AbstractMenuRepository",)
+__all__ = ('AbstractMenuRepository',)
 
 
 @dataclass

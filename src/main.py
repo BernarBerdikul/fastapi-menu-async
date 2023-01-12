@@ -5,8 +5,8 @@ from fastapi.responses import ORJSONResponse
 
 from src import settings
 from src.api.v1.resources import dishes, menus, submenus
-from src.db import cache, redis_cache, dummy_cache
 from src.api.v1.schemas import HealthCheck
+from src.db import cache, dummy_cache, redis_cache  # noqa
 
 app = FastAPI(
     title=settings.app.project_name,
@@ -34,17 +34,17 @@ async def health_check():
 @app.on_event('startup')
 async def startup():
     """Подключаемся к базам при старте сервера"""
-    # cache.cache = redis_cache.RedisCache(
-    #     cache=await aioredis.Redis(
-    #         host=settings.redis.host,
-    #         port=settings.redis.port,
-    #         db=settings.redis.db,
-    #         encoding=settings.redis.encoding,
-    #         max_connections=settings.redis.max_connections,
-    #     ),
-    # )
+    cache.cache = redis_cache.RedisCache(
+        cache=await aioredis.Redis(
+            host=settings.redis.host,
+            port=settings.redis.port,
+            db=settings.redis.db,
+            encoding=settings.redis.encoding,
+            max_connections=settings.redis.max_connections,
+        ),
+    )
     # Dummy cache
-    cache.cache = dummy_cache.DummyCache()
+    # cache.cache = dummy_cache.DummyCache()
 
 
 @app.on_event('shutdown')

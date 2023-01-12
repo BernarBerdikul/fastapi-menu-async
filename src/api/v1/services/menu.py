@@ -6,11 +6,11 @@ import orjson
 from fastapi import Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.db.cache import AbstractCache, get_cache
-from src.db.db import get_async_session
-from src.models import MenuRead, MenuCreate, MenuDetail, MenuUpdate, MenuList
 from src.api.v1.repositories.menu.menu import MenuRepository
 from src.api.v1.services import ServiceMixin
+from src.db.cache import AbstractCache, get_cache
+from src.db.db import get_async_session
+from src.models import MenuCreate, MenuDetail, MenuList, MenuRead, MenuUpdate
 
 __all__ = (
     'MenuService',
@@ -21,7 +21,7 @@ __all__ = (
 @dataclass
 class MenuService(ServiceMixin):
     repository: MenuRepository
-    cache_key: str = field(default="menu-list")
+    cache_key: str = field(default='menu-list')
 
     async def get_list(self) -> MenuList:
         """Получить список меню."""
@@ -40,7 +40,9 @@ class MenuService(ServiceMixin):
 
         menu = await self.repository.get(menu_id=menu_id)
         if not menu:
-            raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="menu not found")
+            raise HTTPException(
+                status_code=HTTPStatus.NOT_FOUND, detail='menu not found',
+            )
 
         if serialized_menu := MenuDetail.from_orm(menu):
             await self.cache.set(name=f'{menu_id}', value=serialized_menu.json())
@@ -56,7 +58,9 @@ class MenuService(ServiceMixin):
         """Обновить меню."""
         updated_menu = await self.repository.update(menu_id=menu_id, data=data)
         if not updated_menu:
-            raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="menu not found")
+            raise HTTPException(
+                status_code=HTTPStatus.NOT_FOUND, detail='menu not found',
+            )
         await self.cache.delete(name=f'{menu_id}')
         await self.cache.delete(name=self.cache_key)
         return MenuRead.from_orm(updated_menu)

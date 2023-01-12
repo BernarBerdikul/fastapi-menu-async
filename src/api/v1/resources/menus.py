@@ -4,12 +4,12 @@ import uuid as uuid_pkg
 from fastapi import APIRouter, Depends
 
 from src.api.v1.schemas import StatusMessage
-from src.models import MenuCreate, MenuRead, MenuDetail, MenuUpdate, MenuList
 from src.api.v1.services import MenuService, get_menu_service
+from src.models import MenuCreate, MenuDetail, MenuList, MenuRead, MenuUpdate
 
 router = APIRouter(
     prefix='/api/v1/menus',
-    tags=['menus']
+    tags=['menus'],
 )
 
 
@@ -69,11 +69,11 @@ async def menu_update(
     path='/{menu_id}',
     response_model=StatusMessage,
     summary='Удалить меню',
-    status_code=http.HTTPStatus.OK
+    status_code=http.HTTPStatus.OK,
 )
 async def menu_delete(
     menu_id: uuid_pkg.UUID,
     menu_service: MenuService = Depends(get_menu_service),
 ):
     is_deleted: bool = await menu_service.delete(menu_id=menu_id)
-    return StatusMessage(status=is_deleted, message="The menu has been deleted")
+    return StatusMessage(status=is_deleted, message='The menu has been deleted')

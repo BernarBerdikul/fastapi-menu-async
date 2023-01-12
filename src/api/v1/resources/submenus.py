@@ -4,12 +4,18 @@ import uuid as uuid_pkg
 from fastapi import APIRouter, Depends
 
 from src.api.v1.schemas import StatusMessage
-from src.models import SubmenuList, SubmenuRead, SubmenuDetail, SubmenuCreate, SubmenuUpdate
 from src.api.v1.services import SubmenuService, get_submenu_service
+from src.models import (
+    SubmenuCreate,
+    SubmenuDetail,
+    SubmenuList,
+    SubmenuRead,
+    SubmenuUpdate,
+)
 
 router = APIRouter(
     prefix='/api/v1/menus/{menu_id}/submenus',
-    tags=['submenus']
+    tags=['submenus'],
 )
 
 
@@ -81,4 +87,4 @@ async def submenu_delete(
     submenu_service: SubmenuService = Depends(get_submenu_service),
 ):
     is_deleted: bool = await submenu_service.delete(submenu_id=submenu_id)
-    return StatusMessage(status=is_deleted, message="The submenu has been deleted")
+    return StatusMessage(status=is_deleted, message='The submenu has been deleted')

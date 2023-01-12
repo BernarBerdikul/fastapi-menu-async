@@ -1,13 +1,13 @@
 import uuid as uuid_pkg
 from typing import Optional
 
-from sqlalchemy import select, func
+from sqlalchemy import func, select
 from sqlalchemy.orm import joinedload
 
-from src.models import SubmenuCreate, Submenu, SubmenuUpdate
 from src.api.v1.repositories.submenu import AbstractSubmenuRepository
+from src.models import Submenu, SubmenuCreate, SubmenuUpdate
 
-__all__ = ("SubmenuRepository",)
+__all__ = ('SubmenuRepository',)
 
 
 class SubmenuRepository(AbstractSubmenuRepository):
@@ -76,11 +76,11 @@ class SubmenuRepository(AbstractSubmenuRepository):
 
     async def delete(self, submenu_id: uuid_pkg.UUID) -> bool:
         statement = select(
-            self.model
+            self.model,
         ).options(
             joinedload(self.model.submenu_dishes),
         ).where(
-            self.model.id == submenu_id
+            self.model.id == submenu_id,
         )
         submenu = await self.session.scalar(statement)
         if submenu:

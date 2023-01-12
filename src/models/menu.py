@@ -1,6 +1,7 @@
-import uuid as uuid_pkg
 from typing import Optional
-from sqlmodel import Field, SQLModel, Relationship
+
+from sqlmodel import Field, Relationship, SQLModel
+
 from src.models.mixins import TimestampMixin, UUIDMixin
 
 __all__ = (
@@ -30,22 +31,22 @@ class Menu(TimestampMixin, MenuBase, table=True):
     __tablename__ = 'menu'
 
     is_removed: bool = Field(
-        title="Флаг удаления",
+        title='Флаг удаления',
         default=False,
         nullable=False,
     )
     children: list['Submenu'] = Relationship(
         back_populates='parent',
         sa_relationship_kwargs={
-            "uselist": True,
-            "cascade": 'all, delete',
+            'uselist': True,
+            'cascade': 'all, delete',
         },
     )
     menu_dishes: list['Dish'] = Relationship(
         back_populates='menu',
         sa_relationship_kwargs={
-            "uselist": True,
-            "cascade": "all, delete",
+            'uselist': True,
+            'cascade': 'all, delete',
         },
     )
 
@@ -72,10 +73,10 @@ class MenuCreate(MenuBase):
 
     class Config:
         schema_extra = {
-            "example": {
-                "title": "My menu",
-                "description": "My menu's description",
-            }
+            'example': {
+                'title': 'My menu',
+                'description': 'My menu description',
+            },
         }
 
 
@@ -85,8 +86,8 @@ class MenuUpdate(MenuBase):
 
     class Config:
         schema_extra = {
-            "example": {
-                "title": "My updated menu",
-                "description": "My updated menu's description",
-            }
+            'example': {
+                'title': 'My updated menu',
+                'description': 'My updated menu description',
+            },
         }

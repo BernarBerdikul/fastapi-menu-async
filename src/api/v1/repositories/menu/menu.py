@@ -1,13 +1,13 @@
 import uuid as uuid_pkg
 from typing import Optional
 
-from sqlalchemy import select, func
+from sqlalchemy import func, select
 from sqlalchemy.orm import joinedload
 
-from src.models import MenuCreate, Menu, MenuUpdate, Submenu
 from src.api.v1.repositories.menu.base import AbstractMenuRepository
+from src.models import Menu, MenuCreate, MenuUpdate, Submenu
 
-__all__ = ("MenuRepository",)
+__all__ = ('MenuRepository',)
 
 
 class MenuRepository(AbstractMenuRepository):
@@ -36,13 +36,13 @@ class MenuRepository(AbstractMenuRepository):
     async def get(self, menu_id: uuid_pkg.UUID) -> Optional[Menu]:
         submenus = func.json_agg(
             func.json_build_object(
-                "id",
+                'id',
                 Submenu.id,
-                "title",
+                'title',
                 Submenu.title,
-                "description",
+                'description',
                 Submenu.description,
-            )
+            ),
         )
         statement = select(
             self.model.id,
@@ -91,12 +91,12 @@ class MenuRepository(AbstractMenuRepository):
 
     async def delete(self, menu_id: uuid_pkg.UUID) -> bool:
         statement = select(
-            self.model
+            self.model,
         ).options(
             joinedload(self.model.children),
             joinedload(self.model.menu_dishes),
         ).where(
-            self.model.id == menu_id
+            self.model.id == menu_id,
         )
         menu = await self.session.scalar(statement)
         if menu:
