@@ -5,7 +5,7 @@ import sqlalchemy as sa
 from sqlalchemy.orm import joinedload
 
 from src.api.v1.repositories.menu.base import AbstractMenuRepository
-from src.models import Menu, MenuCreate, MenuUpdate, Submenu
+from src.models import Menu, MenuCreate, MenuUpdate
 
 __all__ = ('MenuRepository',)
 
@@ -14,12 +14,12 @@ class MenuRepository(AbstractMenuRepository):
     model: Menu = Menu
 
     async def list(self) -> list[Menu]:
-        statement = select(
+        statement = sa.select(
             self.model.id,
             self.model.title,
             self.model.description,
-            func.count(self.model.children).label('submenus_count'),
-            func.count(self.model.menu_dishes).label('dishes_count'),
+            sa.func.count(self.model.children).label('submenus_count'),
+            sa.func.count(self.model.menu_dishes).label('dishes_count'),
         ).outerjoin(
             self.model.children,
         ).outerjoin(
