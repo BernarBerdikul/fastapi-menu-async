@@ -79,7 +79,7 @@ class DishCreate(DishBase):
         schema_extra = {
             'example': {
                 'title': 'My dish',
-                'description': "My dish description",
+                'description': 'My dish description',
                 'price': 1000.00,
             },
         }
@@ -105,7 +105,7 @@ class DishUpdate(DishBase):
         schema_extra = {
             'example': {
                 'title': 'My updated dish',
-                'description': "My updated dish description",
+                'description': 'My updated dish description',
                 'price': 1200.00,
             },
         }

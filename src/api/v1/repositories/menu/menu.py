@@ -5,7 +5,7 @@ import sqlalchemy as sa
 from sqlalchemy.orm import joinedload
 
 from src.api.v1.repositories.menu.base import AbstractMenuRepository
-from src.models import Menu, MenuCreate, MenuUpdate, Submenu, Dish
+from src.models import Dish, Menu, MenuCreate, MenuUpdate, Submenu
 
 __all__ = ('MenuRepository',)
 
@@ -16,26 +16,29 @@ class MenuRepository(AbstractMenuRepository):
     async def list(self) -> list[Menu]:
         submenus_counts = sa.select(
             Submenu.parent_id.label('menu_id'),
-            sa.func.count(Submenu.id).label('count')
+            sa.func.count(Submenu.id).label('count'),
         ).group_by(Submenu.parent_id).subquery()
 
         dishes_counts = sa.select(
             Dish.menu_id.label('menu_id'),
-            sa.func.count(Dish.id).label('count')
+            sa.func.count(Dish.id).label('count'),
         ).group_by(Dish.menu_id).subquery()
 
         statement = sa.select(
             self.model.id,
             self.model.title,
             self.model.description,
-            sa.func.coalesce(submenus_counts.c.count, 0).label('submenus_count'),
+            sa.func.coalesce(
+                submenus_counts.c.count,
+                0,
+            ).label('submenus_count'),
             sa.func.coalesce(dishes_counts.c.count, 0).label('dishes_count'),
         ).outerjoin(
             submenus_counts,
-            submenus_counts.c.menu_id == self.model.id
+            submenus_counts.c.menu_id == self.model.id,
         ).outerjoin(
             dishes_counts,
-            dishes_counts.c.menu_id == self.model.id
+            dishes_counts.c.menu_id == self.model.id,
         )
         results = await self.session.execute(statement)
         menus: list[Menu] = results.all()
@@ -44,26 +47,29 @@ class MenuRepository(AbstractMenuRepository):
     async def get(self, menu_id: uuid_pkg.UUID) -> Optional[Menu]:
         submenus_counts = sa.select(
             Submenu.parent_id.label('menu_id'),
-            sa.func.count(Submenu.id).label('count')
+            sa.func.count(Submenu.id).label('count'),
         ).group_by(Submenu.parent_id).subquery()
 
         dishes_counts = sa.select(
             Dish.menu_id.label('menu_id'),
-            sa.func.count(Dish.id).label('count')
+            sa.func.count(Dish.id).label('count'),
         ).group_by(Dish.menu_id).subquery()
 
         statement = sa.select(
             self.model.id,
             self.model.title,
             self.model.description,
-            sa.func.coalesce(submenus_counts.c.count, 0).label('submenus_count'),
+            sa.func.coalesce(
+                submenus_counts.c.count,
+                0,
+            ).label('submenus_count'),
             sa.func.coalesce(dishes_counts.c.count, 0).label('dishes_count'),
         ).outerjoin(
             submenus_counts,
-            submenus_counts.c.menu_id == self.model.id
+            submenus_counts.c.menu_id == self.model.id,
         ).outerjoin(
             dishes_counts,
-            dishes_counts.c.menu_id == self.model.id
+            dishes_counts.c.menu_id == self.model.id,
         ).where(
             self.model.id == menu_id,
         )
