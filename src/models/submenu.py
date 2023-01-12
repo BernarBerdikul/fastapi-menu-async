@@ -55,7 +55,7 @@ class Submenu(TimestampMixin, SubmenuBase, table=True):
 
 
 class SubmenuRead(SubmenuBase, UUIDMixin):
-    dishes_count: int = Field(default=0)
+    dishes_count: Optional[int] = Field(default=0)
 
 
 class SubmenuList(SQLModel):

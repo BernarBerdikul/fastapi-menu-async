@@ -68,6 +68,7 @@ class MenuService(ServiceMixin):
     async def delete(self, menu_id: uuid_pkg.UUID) -> bool:
         """Удалить меню."""
         is_deleted = await self.repository.delete(menu_id=menu_id)
+        await self.cache.delete(name=f'{menu_id}')
         await self.cache.delete(name=self.cache_key)
         return is_deleted
 

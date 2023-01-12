@@ -64,7 +64,7 @@ class Dish(TimestampMixin, DishBase, table=True):
 
 
 class DishRead(DishBase, UUIDMixin):
-    ...
+    price: str
 
 
 class DishList(SQLModel):

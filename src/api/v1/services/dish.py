@@ -53,6 +53,10 @@ class DishService(ServiceMixin):
         data.menu_id = menu_id
         data.submenu_id = submenu_id
         new_dish = await self.repository.add(data=data)
+        await self.cache.delete(name=f'{menu_id}')
+        await self.cache.delete(name=f'{submenu_id}')
+        await self.cache.delete(name='menu-list')
+        await self.cache.delete(name='submenu-list')
         await self.cache.delete(name=self.cache_key)
         return DishRead.from_orm(new_dish)
 
@@ -70,6 +74,7 @@ class DishService(ServiceMixin):
     async def delete(self, dish_id: uuid_pkg.UUID) -> bool:
         """Удалить блюдо."""
         is_deleted = await self.repository.delete(dish_id=dish_id)
+        await self.cache.delete(name=f'{dish_id}')
         await self.cache.delete(name=self.cache_key)
         return is_deleted
 

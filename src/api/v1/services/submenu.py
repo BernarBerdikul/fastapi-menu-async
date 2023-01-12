@@ -58,6 +58,8 @@ class SubmenuService(ServiceMixin):
         """Создать подменю."""
         data.parent_id = menu_id
         new_submenu = await self.repository.add(data=data)
+        await self.cache.delete(name=f'{menu_id}')
+        await self.cache.delete(name='menu-list')
         await self.cache.delete(name=self.cache_key)
         return SubmenuRead.from_orm(new_submenu)
 
@@ -75,6 +77,7 @@ class SubmenuService(ServiceMixin):
     async def delete(self, submenu_id: uuid_pkg.UUID) -> bool:
         """Удалить подменю."""
         is_deleted = await self.repository.delete(submenu_id=submenu_id)
+        await self.cache.delete(name=f'{submenu_id}')
         await self.cache.delete(name=self.cache_key)
         return is_deleted
 
