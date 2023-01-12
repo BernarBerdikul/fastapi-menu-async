@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends
 
 from src.api.v1.schemas import StatusMessage
 from src.api.v1.services import MenuService, get_menu_service
-from src.models import MenuCreate, MenuDetail, MenuList, MenuRead, MenuUpdate
+from src.models import MenuCreate, MenuList, MenuRead, MenuUpdate
 
 router = APIRouter(
     prefix='/api/v1/menus',
@@ -27,14 +27,14 @@ async def menu_list(
 
 @router.get(
     path='/{menu_id}',
-    response_model=MenuDetail,
+    response_model=MenuRead,
     summary='Конкретное меню',
     status_code=http.HTTPStatus.OK,
 )
 async def menu_detail(
     menu_id: uuid_pkg.UUID,
     menu_service: MenuService = Depends(get_menu_service),
-) -> MenuDetail:
+) -> MenuRead:
     return await menu_service.get_detail(menu_id=menu_id)
 
 

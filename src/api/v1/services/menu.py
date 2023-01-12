@@ -10,7 +10,7 @@ from src.api.v1.repositories.menu.menu import MenuRepository
 from src.api.v1.services import ServiceMixin
 from src.db.cache import AbstractCache, get_cache
 from src.db.db import get_async_session
-from src.models import MenuCreate, MenuDetail, MenuList, MenuRead, MenuUpdate
+from src.models import MenuCreate, MenuList, MenuRead, MenuUpdate
 
 __all__ = (
     'MenuService',
@@ -33,7 +33,7 @@ class MenuService(ServiceMixin):
             await self.cache.set(name=self.cache_key, value=serialized_menus.json())
         return serialized_menus
 
-    async def get_detail(self, menu_id: uuid_pkg.UUID) -> MenuDetail:
+    async def get_detail(self, menu_id: uuid_pkg.UUID) -> MenuRead:
         """Получить детальную информацию по меню."""
         if cached_menu := await self.cache.get(name=f'{menu_id}'):
             return orjson.loads(cached_menu)
@@ -44,7 +44,7 @@ class MenuService(ServiceMixin):
                 status_code=HTTPStatus.NOT_FOUND, detail='menu not found',
             )
 
-        if serialized_menu := MenuDetail.from_orm(menu):
+        if serialized_menu := MenuRead.from_orm(menu):
             await self.cache.set(name=f'{menu_id}', value=serialized_menu.json())
         return serialized_menu
 

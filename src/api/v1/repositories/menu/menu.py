@@ -1,7 +1,7 @@
 import uuid as uuid_pkg
 from typing import Optional
 
-from sqlalchemy import func, select
+import sqlalchemy as sa
 from sqlalchemy.orm import joinedload
 
 from src.api.v1.repositories.menu.base import AbstractMenuRepository
@@ -34,23 +34,12 @@ class MenuRepository(AbstractMenuRepository):
         return menus
 
     async def get(self, menu_id: uuid_pkg.UUID) -> Optional[Menu]:
-        submenus = func.json_agg(
-            func.json_build_object(
-                'id',
-                Submenu.id,
-                'title',
-                Submenu.title,
-                'description',
-                Submenu.description,
-            ),
-        )
-        statement = select(
+        statement = sa.select(
             self.model.id,
             self.model.title,
             self.model.description,
-            submenus.label('submenus'),
-            func.count(self.model.children).label('submenus_count'),
-            func.count(self.model.menu_dishes).label('dishes_count'),
+            sa.func.count(self.model.children).label('submenus_count'),
+            sa.func.count(self.model.menu_dishes).label('dishes_count'),
         ).outerjoin(
             self.model.children,
         ).outerjoin(
@@ -67,7 +56,7 @@ class MenuRepository(AbstractMenuRepository):
         return menu
 
     async def __get(self, menu_id: uuid_pkg.UUID) -> Optional[Menu]:
-        statement = select(self.model).where(self.model.id == menu_id)
+        statement = sa.select(self.model).where(self.model.id == menu_id)
         results = await self.session.execute(statement=statement)
         menu: Optional[Menu] = results.scalar_one_or_none()
         return menu
@@ -90,7 +79,7 @@ class MenuRepository(AbstractMenuRepository):
         return updated_menu
 
     async def delete(self, menu_id: uuid_pkg.UUID) -> bool:
-        statement = select(
+        statement = sa.select(
             self.model,
         ).options(
             joinedload(self.model.children),

@@ -8,7 +8,6 @@ __all__ = (
     'Menu',
     'MenuRead',
     'MenuList',
-    'MenuDetail',
     'MenuCreate',
     'MenuUpdate',
 )
@@ -58,14 +57,6 @@ class MenuRead(MenuBase, UUIDMixin):
 
 class MenuList(SQLModel):
     __root__: list[MenuRead]
-
-
-class MenuDetailItem(MenuBase, UUIDMixin):
-    ...
-
-
-class MenuDetail(MenuRead):
-    submenus: list[MenuDetailItem]
 
 
 class MenuCreate(MenuBase):
