@@ -85,5 +85,9 @@ async def dish_delete(
     dish_id: uuid_pkg.UUID,
     dish_service: DishService = Depends(get_dish_service),
 ):
-    is_deleted: bool = await dish_service.delete(dish_id=dish_id)
+    is_deleted: bool = await dish_service.delete(
+        menu_id=menu_id,
+        submenu_id=submenu_id,
+        dish_id=dish_id,
+    )
     return StatusMessage(status=is_deleted, message='The dish has been deleted')

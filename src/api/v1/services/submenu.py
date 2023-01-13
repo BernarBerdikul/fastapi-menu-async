@@ -74,10 +74,11 @@ class SubmenuService(ServiceMixin):
         await self.cache.delete(name=self.cache_key)
         return SubmenuRead.from_orm(updated_submenu)
 
-    async def delete(self, submenu_id: uuid_pkg.UUID) -> bool:
+    async def delete(self, menu_id: uuid_pkg.UUID, submenu_id: uuid_pkg.UUID) -> bool:
         """Удалить подменю."""
         is_deleted = await self.repository.delete(submenu_id=submenu_id)
         await self.cache.delete(name=f'{submenu_id}')
+        await self.cache.delete(name=f'{menu_id}')
         await self.cache.delete(name=self.cache_key)
         return is_deleted
 

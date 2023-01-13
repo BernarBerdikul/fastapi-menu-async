@@ -86,5 +86,8 @@ async def submenu_delete(
     submenu_id: uuid_pkg.UUID,
     submenu_service: SubmenuService = Depends(get_submenu_service),
 ):
-    is_deleted: bool = await submenu_service.delete(submenu_id=submenu_id)
+    is_deleted: bool = await submenu_service.delete(
+        menu_id=menu_id,
+        submenu_id=submenu_id,
+    )
     return StatusMessage(status=is_deleted, message='The submenu has been deleted')
