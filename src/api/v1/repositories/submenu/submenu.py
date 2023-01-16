@@ -23,11 +23,7 @@ class SubmenuRepository(AbstractSubmenuRepository):
             self.model.submenu_dishes,
         ).where(
             self.model.parent_id == menu_id,
-        ).group_by(
-            self.model.id,
-            self.model.title,
-            self.model.description,
-        )
+        ).group_by(self.model.id)
         results = await self.session.execute(statement)
         submenus: list[Submenu] = results.all()
         return submenus
@@ -42,11 +38,7 @@ class SubmenuRepository(AbstractSubmenuRepository):
             self.model.submenu_dishes,
         ).where(
             self.model.id == submenu_id,
-        ).group_by(
-            self.model.id,
-            self.model.title,
-            self.model.description,
-        )
+        ).group_by(self.model.id)
         results = await self.session.execute(statement=statement)
         submenu: Optional[Submenu] = results.one_or_none()
         return submenu

@@ -23,13 +23,7 @@ class DishRepository(AbstractDishRepository):
         return dishes
 
     async def get(self, dish_id: uuid_pkg.UUID) -> Optional[Dish]:
-        statement = select(
-            self.model,
-        ).where(
-            self.model.id == dish_id,
-        )
-        results = await self.session.execute(statement=statement)
-        dish: Optional[Dish] = results.scalar_one_or_none()
+        dish: Optional[Dish] = await self.session.get(self.model, dish_id)
         return dish
 
     async def add(self, data: DishCreate) -> Dish:
