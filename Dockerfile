@@ -1,5 +1,5 @@
 ## Базовый образ для сборки
-FROM python:3.9.10-slim
+FROM python:3.10-slim
 
 # Указываем рабочую директорию
 WORKDIR /usr/src/app
@@ -10,12 +10,25 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 # Установка зависимостей проекта
-COPY ./requirements.txt .
-RUN pip install --upgrade pip && pip install -r requirements.txt --no-cache-dir
+COPY ./pyproject.toml ./poetry.lock ./
+
+RUN apt-get update && \
+    apt-get install --no-install-recommends -y \
+        python3-dev \
+        libpq-dev \
+    # install packages
+    && python -m pip install --upgrade pip \
+    && pip install poetry \
+    && poetry config virtualenvs.create false \
+    && poetry install --no-interaction --no-ansi --no-root \
+    # clean
+    && rm -rf /root/.cache \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get -qq autoremove \
+    && apt-get clean
 
 # Копируем проект
-COPY . .
+COPY ./src ./src
 
 # Запускаем проект
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0"]
-#CMD ["python", "main.py"]
+CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0"]
