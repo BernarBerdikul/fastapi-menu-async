@@ -10,7 +10,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 # Установка зависимостей проекта
-COPY ./pyproject.toml ./poetry.lock ./
+COPY ./pyproject.toml ./poetry.lock ./alembic.ini ./entrypoint.sh ./
 
 RUN apt-get update && \
     apt-get install --no-install-recommends -y \
@@ -31,4 +31,5 @@ RUN apt-get update && \
 COPY ./src ./src
 
 # Запускаем проект
-CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0"]
+#CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0"]
+ENTRYPOINT ["./entrypoint.sh"]
