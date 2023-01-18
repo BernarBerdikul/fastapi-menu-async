@@ -8,7 +8,7 @@ from src.api.v1.services import MenuService, get_menu_service
 from src.models import MenuCreate, MenuList, MenuRead, MenuUpdate
 
 router = APIRouter(
-    prefix='/api/v1/menus',
+    prefix='/menus',
     tags=['menus'],
 )
 

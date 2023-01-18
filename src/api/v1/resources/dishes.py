@@ -8,7 +8,7 @@ from src.api.v1.services import DishService, get_dish_service
 from src.models import DishCreate, DishList, DishRead, DishUpdate
 
 router = APIRouter(
-    prefix='/api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes',
+    prefix='/menus/{menu_id}/submenus/{submenu_id}/dishes',
     tags=['dishes'],
 )
 

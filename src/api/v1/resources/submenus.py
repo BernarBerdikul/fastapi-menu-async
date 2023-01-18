@@ -14,7 +14,7 @@ from src.models import (
 )
 
 router = APIRouter(
-    prefix='/api/v1/menus/{menu_id}/submenus',
+    prefix='/menus/{menu_id}/submenus',
     tags=['submenus'],
 )
 
