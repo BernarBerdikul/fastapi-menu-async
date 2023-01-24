@@ -6,6 +6,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    environment:
+      CONFIG_FILE: "config.yaml"
+    entrypoint: "./entrypoint.sh"
+    volumes:
+      - ./src:/usr/src/app/src/
     networks:
       - menu_network
     ports:
@@ -18,7 +23,7 @@ services:
 
   menu_redis:
     container_name: menu_redis
-    image: redis:6.2.6-alpine
+    image: redis:7.0.8-alpine
     expose:
       - 6379
     ports:
@@ -33,7 +38,7 @@ services:
 
   menu_postgres_db:
     container_name: menu_postgres_db
-    image: postgres:latest
+    image: postgres:15.1-alpine
     volumes:
       - menu_postgres_data:/var/lib/postgresql/data/
     environment:
@@ -54,6 +59,7 @@ services:
 
 networks:
   menu_network:
+    name: menu_network
 
 volumes:
   menu_postgres_data:

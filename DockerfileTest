@@ -29,6 +29,7 @@ RUN apt-get update && \
 
 # Копируем проект
 COPY ./src ./src
+COPY ./tests ./tests
 
 # Запускаем проект
 #CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0"]
