@@ -54,6 +54,7 @@ async def shutdown():
 
 
 # Подключаем роутеры к серверу
+# app.include_router(router=main_v1_router, prefix='/api/v1')
 app.include_router(router=menus.router, prefix='/api/v1')
 app.include_router(router=submenus.router, prefix='/api/v1')
 app.include_router(router=dishes.router, prefix='/api/v1')

@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional
 
 from src.db.cache import AbstractCache
 
@@ -13,7 +13,7 @@ class FakeCache(AbstractCache):
     async def get(self, name: str) -> Optional[dict]:
         return self.cache.get(name)
 
-    async def set(self, name: str, value: Union[bytes, str], expire: Optional[int] = None):
+    async def set(self, name: str, value: Any, expire: Optional[int] = None):
         self.cache.update({name: value})
 
     async def delete(self, name: str) -> None:

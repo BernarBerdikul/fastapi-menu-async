@@ -18,19 +18,3 @@ async def get_async_session() -> AsyncSession:
     )
     async with async_session() as session:
         yield session
-
-# from contextlib import asynccontextmanager
-#
-# AsyncLocalSession = sessionmaker(
-#     bind=async_engine, class_=AsyncSession, expire_on_commit=False,
-# )
-# @asynccontextmanager
-# async def get_async_session() -> AsyncSession:
-#     session = AsyncLocalSession()
-#     try:
-#         yield session
-#     except Exception as e:
-#         print(e)
-#         await session.rollback()
-#     finally:
-#         await session.close()

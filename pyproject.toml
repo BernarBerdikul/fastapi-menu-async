@@ -3,6 +3,7 @@ name = "fast-api-menu"
 version = "0.1.0"
 description = ""
 authors = ["Bernar Berdikul <bernar.berdikul@mail.ru>"]
+license = "BSD-3-Clause license"
 readme = "README.md"
 packages = [{include = "fast_api_menu"}]
 

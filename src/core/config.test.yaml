@@ -7,11 +7,11 @@ app:
   db_exclude_tables: []
 
 postgres:
-  host: localhost
-  port: 5432
-  dbname: my_menu
-  user: my_menu
-  password: my_menu
+  host: test_menu_postgres_db
+  port: 15432
+  dbname: test
+  user: test
+  password: test
 
 redis:
   host: localhost

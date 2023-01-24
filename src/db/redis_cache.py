@@ -1,6 +1,7 @@
 from dataclasses import dataclass
-from typing import Optional, Union
+from typing import Any, Optional
 
+import orjson
 from aioredis import Redis
 
 from src import settings
@@ -13,11 +14,15 @@ __all__ = ('RedisCache',)
 class RedisCache(AbstractCache):
     cache: Redis
 
-    async def get(self, name: str) -> Optional[dict]:
-        return await self.cache.get(name=name)
+    async def get(self, name: str) -> Optional[Any]:
+        data = await self.cache.get(name=name)
+        return orjson.loads(data) if data else None
 
-    async def set(self, name: str, value: Union[bytes, str], expire: int = settings.redis.cache_expire_time):
-        await self.cache.set(name=name, value=value, ex=expire)
+    async def set(self, name: str, value: Any, expire: int = settings.redis.cache_expire_time) -> None:
+        data = value
+        if not isinstance(value, bytes | str):
+            data = orjson.dumps(value)
+        await self.cache.set(name=name, value=data, ex=expire)
 
     async def delete(self, name: str) -> None:
         await self.cache.delete(name)

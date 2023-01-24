@@ -12,7 +12,6 @@ postgres:
   dbname: my_menu
   user: my_menu
   password: my_menu
-  async_dsn: postgresql+asyncpg://my_menu:my_menu@menu_postgres_db:5432/my_menu
 
 redis:
   host: menu_redis

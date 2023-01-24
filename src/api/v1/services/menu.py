@@ -2,7 +2,6 @@ import uuid as uuid_pkg
 from dataclasses import dataclass, field
 from http import HTTPStatus
 
-import orjson
 from fastapi import Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -26,7 +25,7 @@ class MenuService(ServiceMixin):
     async def get_list(self) -> MenuList:
         """Получить список меню."""
         if cached_menus := await self.cache.get(name=self.cache_key):
-            return orjson.loads(cached_menus)
+            return cached_menus
 
         menus = await self.repository.list()
         if serialized_menus := MenuList.from_orm(menus):
@@ -36,7 +35,7 @@ class MenuService(ServiceMixin):
     async def get_detail(self, menu_id: uuid_pkg.UUID) -> MenuRead:
         """Получить детальную информацию по меню."""
         if cached_menu := await self.cache.get(name=f'{menu_id}'):
-            return orjson.loads(cached_menu)
+            return cached_menu
 
         menu = await self.repository.get(menu_id=menu_id)
         if not menu:

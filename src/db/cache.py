@@ -1,23 +1,23 @@
 from abc import ABC, abstractmethod
-from typing import Optional, Union
+from typing import Any, Optional
 
 
 class AbstractCache(ABC):
 
     @abstractmethod
-    async def get(self, name: str):
+    async def get(self, name: str) -> Optional[Any]:
         raise NotImplementedError
 
     @abstractmethod
-    async def set(self, name: str, value: Union[bytes, str], expire: Optional[int] = None):
+    async def set(self, name: str, value: Any, expire: Optional[int] = None) -> None:
         raise NotImplementedError
 
     @abstractmethod
-    async def delete(self, name: str):
+    async def delete(self, name: str) -> None:
         raise NotImplementedError
 
     @abstractmethod
-    async def close(self):
+    async def close(self) -> None:
         raise NotImplementedError
 
 

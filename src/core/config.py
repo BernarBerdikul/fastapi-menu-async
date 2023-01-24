@@ -1,8 +1,9 @@
+import os
 from functools import lru_cache
 from pathlib import Path
 
 import yaml
-from pydantic import BaseSettings, PostgresDsn
+from pydantic import BaseSettings
 from yaml import Loader
 
 
@@ -21,7 +22,15 @@ class Postgres(BaseSettings):
     dbname: str
     user: str
     password: str
-    async_dsn: PostgresDsn
+
+    @property
+    def async_dsn(self) -> str:
+        host: str = self.host
+        port: int = self.port
+        dbname: str = self.dbname
+        user: str = self.user
+        password: str = self.password
+        return f'postgresql+asyncpg://{user}:{password}@{host}:{port}/{dbname}'
 
 
 class Redis(BaseSettings):
@@ -39,7 +48,8 @@ class Settings(BaseSettings):
     redis: Redis
 
 
-settings_path = Path(__file__).parent / 'config.yaml'
+config_file = os.getenv('CONFIG_FILE') or 'config.local.yaml'
+settings_path = Path(__file__).parent / config_file
 with settings_path.open('r') as f:
     yaml_settings = yaml.load(f, Loader=Loader)
 
