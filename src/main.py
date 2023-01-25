@@ -4,9 +4,14 @@ from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 
 from src import settings
-from src.api.v1.resources import dishes, menus, submenus
-from src.api.v1.schemas import HealthCheck
+from src.api.v1.resources import dishes as dishes_v1
+from src.api.v1.resources import menus as menus_v1
+from src.api.v1.resources import submenus as submenus_v1
+from src.api.v2.resources import dishes as dishes_v2
+from src.api.v2.resources import menus as menus_v2
+from src.api.v2.resources import submenus as submenus_v2
 from src.db import cache, dummy_cache, redis_cache  # noqa
+from src.schemas import HealthCheck
 
 app = FastAPI(
     title=settings.app.project_name,
@@ -34,17 +39,19 @@ async def health_check():
 @app.on_event('startup')
 async def startup():
     """Подключаемся к базам при старте сервера"""
-    cache.cache = redis_cache.RedisCache(
-        cache=await aioredis.Redis(
-            host=settings.redis.host,
-            port=settings.redis.port,
-            db=settings.redis.db,
-            encoding=settings.redis.encoding,
-            max_connections=settings.redis.max_connections,
-        ),
-    )
-    # Dummy cache
-    # cache.cache = dummy_cache.DummyCache()
+    if settings.app.debug:
+        # Dummy cache
+        cache.cache = dummy_cache.DummyCache()
+    else:
+        cache.cache = redis_cache.RedisCache(
+            cache=await aioredis.Redis(
+                host=settings.redis.host,
+                port=settings.redis.port,
+                db=settings.redis.db,
+                encoding=settings.redis.encoding,
+                max_connections=settings.redis.max_connections,
+            ),
+        )
 
 
 @app.on_event('shutdown')
@@ -54,10 +61,14 @@ async def shutdown():
 
 
 # Подключаем роутеры к серверу
-# app.include_router(router=main_v1_router, prefix='/api/v1')
-app.include_router(router=menus.router, prefix='/api/v1')
-app.include_router(router=submenus.router, prefix='/api/v1')
-app.include_router(router=dishes.router, prefix='/api/v1')
+# API version 1
+app.include_router(router=menus_v1.router, prefix='/api/v1')
+app.include_router(router=submenus_v1.router, prefix='/api/v1')
+app.include_router(router=dishes_v1.router, prefix='/api/v1')
+# API version 2
+app.include_router(router=menus_v2.router, prefix='/api/v2')
+app.include_router(router=submenus_v2.router, prefix='/api/v2')
+app.include_router(router=dishes_v2.router, prefix='/api/v2')
 
 
 if __name__ == '__main__':

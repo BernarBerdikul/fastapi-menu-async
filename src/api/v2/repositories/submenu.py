@@ -4,13 +4,14 @@ from typing import Optional
 from sqlalchemy import func, select
 from sqlalchemy.orm import joinedload
 
-from src.api.v1.repositories.submenu import AbstractSubmenuRepository
 from src.models import Submenu, SubmenuCreate, SubmenuUpdate
 
 __all__ = ('SubmenuRepository',)
 
+from src.repositories import AbstractRepository
 
-class SubmenuRepository(AbstractSubmenuRepository):
+
+class SubmenuRepository(AbstractRepository):
     model: Submenu = Submenu
 
     async def list(self, menu_id: uuid_pkg.UUID) -> list[Submenu]:
@@ -46,14 +47,12 @@ class SubmenuRepository(AbstractSubmenuRepository):
     async def __get(self, submenu_id: uuid_pkg.UUID) -> Optional[Submenu]:
         statement = select(self.model).where(self.model.id == submenu_id)
         results = await self.session.execute(statement=statement)
-        menu: Optional[Submenu] = results.scalar_one_or_none()
-        return menu
+        submenu: Optional[Submenu] = results.scalar_one_or_none()
+        return submenu
 
     async def add(self, data: SubmenuCreate) -> Submenu:
         new_submenu = Submenu.from_orm(data)
         self.session.add(new_submenu)
-        await self.session.commit()
-        await self.session.refresh(new_submenu)
         return new_submenu
 
     async def update(self, submenu_id: uuid_pkg.UUID, data: SubmenuUpdate) -> Optional[Submenu]:
@@ -62,8 +61,6 @@ class SubmenuRepository(AbstractSubmenuRepository):
             for k, v in values.items():
                 setattr(updated_submenu, k, v)
             self.session.add(updated_submenu)
-            await self.session.commit()
-            await self.session.refresh(updated_submenu)
         return updated_submenu
 
     async def delete(self, submenu_id: uuid_pkg.UUID) -> bool:
@@ -77,5 +74,4 @@ class SubmenuRepository(AbstractSubmenuRepository):
         submenu = await self.session.scalar(statement)
         if submenu:
             await self.session.delete(submenu)
-            await self.session.commit()
         return True

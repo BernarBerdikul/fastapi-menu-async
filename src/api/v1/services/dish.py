@@ -5,11 +5,11 @@ from http import HTTPStatus
 from fastapi import Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.api.v1.repositories.dish import DishRepository
 from src.api.v1.services import ServiceMixin
 from src.db.cache import AbstractCache, get_cache
 from src.db.db import get_async_session
 from src.models import DishCreate, DishList, DishRead, DishUpdate
+from src.repositories import DishRepository
 
 __all__ = (
     'DishService',
@@ -19,7 +19,6 @@ __all__ = (
 
 @dataclass
 class DishService(ServiceMixin):
-    repository: DishRepository
     cache_key: str = field(default='dish-list')
 
     async def get_list(self, submenu_id: uuid_pkg.UUID) -> DishList:
@@ -81,8 +80,8 @@ class DishService(ServiceMixin):
 
 
 async def get_dish_service(
-    cache: AbstractCache = Depends(get_cache),
-    session: AsyncSession = Depends(get_async_session),
+        cache: AbstractCache = Depends(get_cache),
+        session: AsyncSession = Depends(get_async_session),
 ) -> DishService:
     repository = DishRepository(session=session)
-    return DishService(cache=cache, session=session, repository=repository)
+    return DishService(cache=cache, repository=repository)

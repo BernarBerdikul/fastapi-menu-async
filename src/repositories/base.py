@@ -1,34 +1,31 @@
-import uuid as uuid_pkg
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.models import DishCreate, DishUpdate
-
-__all__ = ('AbstractDishRepository',)
+__all__ = ('AbstractRepository',)
 
 
 @dataclass
-class AbstractDishRepository(ABC):
+class AbstractRepository(ABC):
     session: AsyncSession
 
     @abstractmethod
-    async def get(self, dish_id: uuid_pkg.UUID):
+    async def get(self, *args, **kwargs):
         raise NotImplementedError
 
     @abstractmethod
-    async def list(self, submenu_id: uuid_pkg.UUID):
+    async def list(self, *args, **kwargs):
         raise NotImplementedError
 
     @abstractmethod
-    async def add(self, data: DishCreate):
+    async def add(self, *args, **kwargs):
         raise NotImplementedError
 
     @abstractmethod
-    async def update(self, dish_id: uuid_pkg.UUID, data: DishUpdate):
+    async def update(self, *args, **kwargs):
         raise NotImplementedError
 
     @abstractmethod
-    async def delete(self, dish_id: uuid_pkg.UUID):
+    async def delete(self, *args, **kwargs):
         raise NotImplementedError

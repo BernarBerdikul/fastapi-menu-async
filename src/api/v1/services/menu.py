@@ -5,7 +5,6 @@ from http import HTTPStatus
 from fastapi import Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.api.v1.repositories.menu.menu import MenuRepository
 from src.api.v1.services import ServiceMixin
 from src.db.cache import AbstractCache, get_cache
 from src.db.db import get_async_session
@@ -16,10 +15,11 @@ __all__ = (
     'get_menu_service',
 )
 
+from src.repositories import MenuRepository
+
 
 @dataclass
 class MenuService(ServiceMixin):
-    repository: MenuRepository
     cache_key: str = field(default='menu-list')
 
     async def get_list(self) -> MenuList:
@@ -77,4 +77,4 @@ async def get_menu_service(
     session: AsyncSession = Depends(get_async_session),
 ) -> MenuService:
     repository = MenuRepository(session=session)
-    return MenuService(cache=cache, session=session, repository=repository)
+    return MenuService(cache=cache, repository=repository)

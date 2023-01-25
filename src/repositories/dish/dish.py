@@ -3,13 +3,14 @@ from typing import Optional
 
 from sqlalchemy import select
 
-from src.api.v1.repositories.dish import AbstractDishRepository
 from src.models import Dish, DishCreate, DishUpdate
 
 __all__ = ('DishRepository',)
 
+from src.repositories import AbstractRepository
 
-class DishRepository(AbstractDishRepository):
+
+class DishRepository(AbstractRepository):
     model: Dish = Dish
 
     async def list(self, submenu_id: uuid_pkg.UUID) -> list[Dish]:

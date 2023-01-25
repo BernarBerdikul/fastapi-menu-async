@@ -3,7 +3,7 @@ import uuid as uuid_pkg
 
 from fastapi import APIRouter, Depends
 
-from src.api.v1.services import SubmenuService, get_submenu_service
+from src.api.v2.services import SubmenuService, get_submenu_service
 from src.models import (
     SubmenuCreate,
     SubmenuDetail,

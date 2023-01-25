@@ -5,7 +5,6 @@ from http import HTTPStatus
 from fastapi import Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.api.v1.repositories.submenu import SubmenuRepository
 from src.api.v1.services import ServiceMixin
 from src.db.cache import AbstractCache, get_cache
 from src.db.db import get_async_session
@@ -22,10 +21,11 @@ __all__ = (
     'get_submenu_service',
 )
 
+from src.repositories import SubmenuRepository
+
 
 @dataclass
 class SubmenuService(ServiceMixin):
-    repository: SubmenuRepository
     cache_key: str = field(default='submenu-list')
 
     async def get_list(self, menu_id: uuid_pkg.UUID) -> SubmenuList:
@@ -87,4 +87,4 @@ async def get_submenu_service(
     session: AsyncSession = Depends(get_async_session),
 ) -> SubmenuService:
     repository = SubmenuRepository(session=session)
-    return SubmenuService(cache=cache, session=session, repository=repository)
+    return SubmenuService(cache=cache, repository=repository)

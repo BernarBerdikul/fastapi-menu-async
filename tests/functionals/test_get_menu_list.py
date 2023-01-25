@@ -8,7 +8,7 @@ from httpx import AsyncClient
 async def test_get_menu_list(
     async_client: AsyncClient,
 ):
-    response = await async_client.get(url='/')
+    response = await async_client.get(url='/api/v1/menus')
     # print(response.json())
     print(response.status_code)
     # assert response.status_code == http.HTTPStatus.OK

@@ -4,13 +4,14 @@ from typing import Optional
 import sqlalchemy as sa
 from sqlalchemy.orm import joinedload
 
-from src.api.v1.repositories.menu.base import AbstractMenuRepository
 from src.models import Dish, Menu, MenuCreate, MenuUpdate, Submenu
 
 __all__ = ('MenuRepository',)
 
+from src.repositories import AbstractRepository
 
-class MenuRepository(AbstractMenuRepository):
+
+class MenuRepository(AbstractRepository):
     model: Menu = Menu
 
     async def list(self) -> list[Menu]:
@@ -23,7 +24,8 @@ class MenuRepository(AbstractMenuRepository):
                     sa.func.distinct(
                         Submenu.id,
                     ),
-                ), 0,
+                ),
+                0,
             ).label('submenus_count'),
             sa.func.coalesce(sa.func.count(Dish.id), 0).label('dishes_count'),
         ).outerjoin(
@@ -72,8 +74,6 @@ class MenuRepository(AbstractMenuRepository):
     async def add(self, data: MenuCreate) -> Menu:
         new_menu = Menu.from_orm(data)
         self.session.add(new_menu)
-        await self.session.commit()
-        await self.session.refresh(new_menu)
         return new_menu
 
     async def update(self, menu_id: uuid_pkg.UUID, data: MenuUpdate) -> Optional[Menu]:
@@ -82,8 +82,6 @@ class MenuRepository(AbstractMenuRepository):
             for k, v in values.items():
                 setattr(updated_menu, k, v)
             self.session.add(updated_menu)
-            await self.session.commit()
-            await self.session.refresh(updated_menu)
         return updated_menu
 
     async def delete(self, menu_id: uuid_pkg.UUID) -> bool:
@@ -98,5 +96,4 @@ class MenuRepository(AbstractMenuRepository):
         menu = await self.session.scalar(statement)
         if menu:
             await self.session.delete(menu)
-            await self.session.commit()
         return True

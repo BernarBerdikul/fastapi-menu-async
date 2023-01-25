@@ -19,4 +19,4 @@ class DummyCache(AbstractCache):
         return None
 
     async def close(self) -> None:
-        ...
+        return None
