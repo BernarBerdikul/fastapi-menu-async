@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Optional
+from typing import Any
 
 import orjson
 from aioredis import Redis
@@ -14,7 +14,7 @@ __all__ = ('RedisCache',)
 class RedisCache(AbstractCache):
     cache: Redis
 
-    async def get(self, name: str) -> Optional[Any]:
+    async def get(self, name: str) -> Any | None:
         data = await self.cache.get(name=name)
         return orjson.loads(data) if data else None
 

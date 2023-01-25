@@ -1,5 +1,4 @@
 import uuid as uuid_pkg
-from typing import Optional
 
 import sqlalchemy as sa
 from sqlalchemy.orm import joinedload
@@ -12,7 +11,7 @@ from src.repositories import AbstractRepository
 
 
 class MenuRepository(AbstractRepository):
-    model: Menu = Menu
+    model: type[Menu] = Menu  # type: ignore
 
     async def list(self) -> list[Menu]:
         statement = sa.select(
@@ -39,7 +38,7 @@ class MenuRepository(AbstractRepository):
         menus: list[Menu] = results.all()
         return menus
 
-    async def get(self, menu_id: uuid_pkg.UUID) -> Optional[Menu]:
+    async def get(self, menu_id: uuid_pkg.UUID) -> Menu | None:
         statement = sa.select(
             self.model.id,
             self.model.title,
@@ -62,13 +61,13 @@ class MenuRepository(AbstractRepository):
             self.model.id == menu_id,
         ).group_by(Menu.id)
         results = await self.session.execute(statement=statement)
-        menu: Optional[Menu] = results.one_or_none()
+        menu: Menu | None = results.one_or_none()
         return menu
 
-    async def __get(self, menu_id: uuid_pkg.UUID) -> Optional[Menu]:
+    async def __get(self, menu_id: uuid_pkg.UUID) -> Menu | None:
         statement = sa.select(self.model).where(self.model.id == menu_id)
         results = await self.session.execute(statement=statement)
-        menu: Optional[Menu] = results.scalar_one_or_none()
+        menu: Menu | None = results.scalar_one_or_none()
         return menu
 
     async def add(self, data: MenuCreate) -> Menu:
@@ -76,7 +75,7 @@ class MenuRepository(AbstractRepository):
         self.session.add(new_menu)
         return new_menu
 
-    async def update(self, menu_id: uuid_pkg.UUID, data: MenuUpdate) -> Optional[Menu]:
+    async def update(self, menu_id: uuid_pkg.UUID, data: MenuUpdate) -> Menu | None:
         if updated_menu := await self.__get(menu_id=menu_id):
             values = data.dict(exclude_unset=True)
             for k, v in values.items():

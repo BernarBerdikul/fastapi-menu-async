@@ -1,7 +1,6 @@
-from typing import Optional
-
 from sqlmodel import Field, Relationship, SQLModel
 
+from src.models import Dish, Submenu
 from src.models.mixins import TimestampMixin, UUIDMixin
 
 __all__ = (
@@ -26,8 +25,8 @@ class MenuBase(SQLModel):
     )
 
 
-class Menu(TimestampMixin, MenuBase, table=True):
-    __tablename__ = 'menu'
+class Menu(TimestampMixin, MenuBase, table=True):  # type: ignore
+    __tablename__ = 'menu'  # noqa
 
     is_removed: bool = Field(
         title='Флаг удаления',
@@ -51,8 +50,8 @@ class Menu(TimestampMixin, MenuBase, table=True):
 
 
 class MenuRead(MenuBase, UUIDMixin):
-    submenus_count: Optional[int] = Field(default=0)
-    dishes_count: Optional[int] = Field(default=0)
+    submenus_count: int | None = Field(default=0)
+    dishes_count: int | None = Field(default=0)
 
 
 class MenuList(SQLModel):
@@ -71,9 +70,9 @@ class MenuCreate(MenuBase):
         }
 
 
-class MenuUpdate(MenuBase):
-    title: Optional[str] = Field(title='Наименование меню', max_length=30)
-    description: Optional[str] = Field(title='Описание меню', max_length=255)
+class MenuUpdate(SQLModel):
+    title: str | None = Field(title='Наименование меню', max_length=30)
+    description: str | None = Field(title='Описание меню', max_length=255)
 
     class Config:
         schema_extra = {

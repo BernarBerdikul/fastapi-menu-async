@@ -1,15 +1,15 @@
 from abc import ABC, abstractmethod
-from typing import Any, Optional
+from typing import Any
 
 
 class AbstractCache(ABC):
 
     @abstractmethod
-    async def get(self, name: str) -> Optional[Any]:
+    async def get(self, name: str) -> Any | None:
         raise NotImplementedError
 
     @abstractmethod
-    async def set(self, name: str, value: Any, expire: Optional[int] = None) -> None:
+    async def set(self, name: str, value: Any, expire: int = 0) -> None:
         raise NotImplementedError
 
     @abstractmethod
@@ -21,9 +21,9 @@ class AbstractCache(ABC):
         raise NotImplementedError
 
 
-cache: Optional[AbstractCache] = None
+cache: AbstractCache | None = None
 
 
 # Функция понадобится при внедрении зависимостей
-async def get_cache() -> AbstractCache:
+async def get_cache() -> AbstractCache | None:
     return cache

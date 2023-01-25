@@ -1,5 +1,4 @@
 import uuid as uuid_pkg
-from typing import Optional
 
 from sqlalchemy import select
 
@@ -11,7 +10,7 @@ from src.repositories import AbstractRepository
 
 
 class DishRepository(AbstractRepository):
-    model: Dish = Dish
+    model: type[Dish] = Dish  # type: ignore
 
     async def list(self, submenu_id: uuid_pkg.UUID) -> list[Dish]:
         statement = select(
@@ -23,8 +22,8 @@ class DishRepository(AbstractRepository):
         dishes: list[Dish] = results.scalars().all()
         return dishes
 
-    async def get(self, dish_id: uuid_pkg.UUID) -> Optional[Dish]:
-        dish: Optional[Dish] = await self.session.get(self.model, dish_id)
+    async def get(self, dish_id: uuid_pkg.UUID) -> Dish | None:
+        dish: Dish | None = await self.session.get(self.model, dish_id)
         return dish
 
     async def add(self, data: DishCreate) -> Dish:
@@ -34,7 +33,7 @@ class DishRepository(AbstractRepository):
         await self.session.refresh(new_dish)
         return new_dish
 
-    async def update(self, dish_id: uuid_pkg.UUID, data: DishUpdate) -> Optional[Dish]:
+    async def update(self, dish_id: uuid_pkg.UUID, data: DishUpdate) -> Dish | None:
         if updated_dish := await self.get(dish_id=dish_id):
             values = data.dict(exclude_unset=True)
             for k, v in values.items():

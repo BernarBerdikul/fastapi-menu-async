@@ -2,9 +2,8 @@ import os
 from functools import lru_cache
 from pathlib import Path
 
-import yaml
+import yaml  # type: ignore
 from pydantic import BaseSettings
-from yaml import Loader
 
 
 class App(BaseSettings):
@@ -51,7 +50,7 @@ class Settings(BaseSettings):
 config_file = os.getenv('CONFIG_FILE') or 'config.local.yaml'
 settings_path = Path(__file__).parent / config_file
 with settings_path.open('r') as f:
-    yaml_settings = yaml.load(f, Loader=Loader)
+    yaml_settings = yaml.load(f, Loader=yaml.Loader)
 
 
 @lru_cache

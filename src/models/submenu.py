@@ -1,8 +1,8 @@
 import uuid as uuid_pkg
-from typing import Optional
 
 from sqlmodel import Field, Relationship, SQLModel
 
+from src.models import Dish, Menu
 from src.models.mixins import TimestampMixin, UUIDMixin
 
 __all__ = (
@@ -28,8 +28,8 @@ class SubmenuBase(SQLModel):
     )
 
 
-class Submenu(TimestampMixin, SubmenuBase, table=True):
-    __tablename__ = 'submenu'
+class Submenu(TimestampMixin, SubmenuBase, table=True):  # type: ignore
+    __tablename__ = 'submenu'  # noqa
 
     is_removed: bool = Field(
         title='Флаг удаления',
@@ -55,7 +55,7 @@ class Submenu(TimestampMixin, SubmenuBase, table=True):
 
 
 class SubmenuRead(SubmenuBase, UUIDMixin):
-    dishes_count: Optional[int] = Field(default=0)
+    dishes_count: int | None = Field(default=0)
 
 
 class SubmenuList(SQLModel):
@@ -67,7 +67,7 @@ class SubmenuDetail(SubmenuRead):
 
 
 class SubmenuCreate(SubmenuBase):
-    parent_id: Optional[uuid_pkg.UUID]
+    parent_id: uuid_pkg.UUID | None
 
     class Config:
         schema_extra = {
@@ -78,12 +78,12 @@ class SubmenuCreate(SubmenuBase):
         }
 
 
-class SubmenuUpdate(SubmenuBase):
-    title: Optional[str] = Field(
+class SubmenuUpdate(SQLModel):
+    title: str | None = Field(
         title='Наименование меню',
         max_length=30,
     )
-    description: Optional[str] = Field(
+    description: str | None = Field(
         title='Описание меню',
         max_length=255,
     )

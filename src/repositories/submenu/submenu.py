@@ -1,5 +1,4 @@
 import uuid as uuid_pkg
-from typing import Optional
 
 from sqlalchemy import func, select
 from sqlalchemy.orm import joinedload
@@ -11,7 +10,7 @@ __all__ = ('SubmenuRepository',)
 
 
 class SubmenuRepository(AbstractRepository):
-    model: Submenu = Submenu
+    model: type[Submenu] = Submenu  # type: ignore
 
     async def list(self, menu_id: uuid_pkg.UUID) -> list[Submenu]:
         statement = select(
@@ -28,7 +27,7 @@ class SubmenuRepository(AbstractRepository):
         submenus: list[Submenu] = results.all()
         return submenus
 
-    async def get(self, submenu_id: uuid_pkg.UUID) -> Optional[Submenu]:
+    async def get(self, submenu_id: uuid_pkg.UUID) -> Submenu | None:
         statement = select(
             self.model.id,
             self.model.title,
@@ -40,13 +39,13 @@ class SubmenuRepository(AbstractRepository):
             self.model.id == submenu_id,
         ).group_by(self.model.id)
         results = await self.session.execute(statement=statement)
-        submenu: Optional[Submenu] = results.one_or_none()
+        submenu: Submenu | None = results.one_or_none()
         return submenu
 
-    async def __get(self, submenu_id: uuid_pkg.UUID) -> Optional[Submenu]:
+    async def __get(self, submenu_id: uuid_pkg.UUID) -> Submenu | None:
         statement = select(self.model).where(self.model.id == submenu_id)
         results = await self.session.execute(statement=statement)
-        submenu: Optional[Submenu] = results.scalar_one_or_none()
+        submenu: Submenu | None = results.scalar_one_or_none()
         return submenu
 
     async def add(self, data: SubmenuCreate) -> Submenu:
@@ -56,7 +55,7 @@ class SubmenuRepository(AbstractRepository):
         await self.session.refresh(new_submenu)
         return new_submenu
 
-    async def update(self, submenu_id: uuid_pkg.UUID, data: SubmenuUpdate) -> Optional[Submenu]:
+    async def update(self, submenu_id: uuid_pkg.UUID, data: SubmenuUpdate) -> Submenu | None:
         if updated_submenu := await self.__get(submenu_id=submenu_id):
             values = data.dict(exclude_unset=True)
             for k, v in values.items():
