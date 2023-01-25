@@ -2,6 +2,7 @@ import aioredis  # noqa
 import uvicorn
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
+from starlette.middleware.base import BaseHTTPMiddleware
 
 from src import settings
 from src.api.v1.resources import dishes as dishes_v1
@@ -11,6 +12,7 @@ from src.api.v2.resources import dishes as dishes_v2
 from src.api.v2.resources import menus as menus_v2
 from src.api.v2.resources import submenus as submenus_v2
 from src.db import cache, dummy_cache, redis_cache  # noqa
+from src.middlewares import add_process_time_header
 from src.schemas import HealthCheck
 
 app = FastAPI(
@@ -25,6 +27,19 @@ app = FastAPI(
     debug=settings.app.debug,
     default_response_class=ORJSONResponse,
 )
+
+app.add_middleware(BaseHTTPMiddleware, dispatch=add_process_time_header)
+
+
+# Подключаем роутеры к серверу
+# API version 1
+app.include_router(router=menus_v1.router, prefix='/api/v1')
+app.include_router(router=submenus_v1.router, prefix='/api/v1')
+app.include_router(router=dishes_v1.router, prefix='/api/v1')
+# API version 2
+app.include_router(router=menus_v2.router, prefix='/api/v2')
+app.include_router(router=submenus_v2.router, prefix='/api/v2')
+app.include_router(router=dishes_v2.router, prefix='/api/v2')
 
 
 @app.get('/', response_model=HealthCheck, tags=['status'])
@@ -58,17 +73,6 @@ async def startup():
 async def shutdown():
     """Отключаемся от баз при выключении сервера"""
     await cache.cache.close()
-
-
-# Подключаем роутеры к серверу
-# API version 1
-app.include_router(router=menus_v1.router, prefix='/api/v1')
-app.include_router(router=submenus_v1.router, prefix='/api/v1')
-app.include_router(router=dishes_v1.router, prefix='/api/v1')
-# API version 2
-app.include_router(router=menus_v2.router, prefix='/api/v2')
-app.include_router(router=submenus_v2.router, prefix='/api/v2')
-app.include_router(router=dishes_v2.router, prefix='/api/v2')
 
 
 if __name__ == '__main__':
