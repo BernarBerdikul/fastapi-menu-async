@@ -2,7 +2,6 @@ import uuid as uuid_pkg
 
 from sqlmodel import Field, Relationship, SQLModel
 
-from src.models import Dish, Menu
 from src.models.mixins import TimestampMixin, UUIDMixin
 
 __all__ = (
@@ -42,10 +41,10 @@ class Submenu(TimestampMixin, SubmenuBase, table=True):  # type: ignore
         nullable=True,
         foreign_key='menu.id',
     )
-    parent: 'Menu' = Relationship(
+    parent: 'Menu' = Relationship(  # type: ignore
         back_populates='children',
     )
-    submenu_dishes: list['Dish'] = Relationship(
+    submenu_dishes: list['Dish'] = Relationship(  # type: ignore
         back_populates='submenu',
         sa_relationship_kwargs={
             'uselist': True,

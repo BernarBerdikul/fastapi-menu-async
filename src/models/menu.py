@@ -1,6 +1,5 @@
 from sqlmodel import Field, Relationship, SQLModel
 
-from src.models import Dish, Submenu
 from src.models.mixins import TimestampMixin, UUIDMixin
 
 __all__ = (
@@ -33,14 +32,14 @@ class Menu(TimestampMixin, MenuBase, table=True):  # type: ignore
         default=False,
         nullable=False,
     )
-    children: list['Submenu'] = Relationship(
+    children: list['Submenu'] = Relationship(  # type: ignore
         back_populates='parent',
         sa_relationship_kwargs={
             'uselist': True,
             'cascade': 'all, delete',
         },
     )
-    menu_dishes: list['Dish'] = Relationship(
+    menu_dishes: list['Dish'] = Relationship(  # type: ignore
         back_populates='menu',
         sa_relationship_kwargs={
             'uselist': True,

@@ -39,7 +39,7 @@ async def submenu_list(
     status_code=http.HTTPStatus.OK,
 )
 async def submenu_detail(
-    menu_id: uuid_pkg.UUID,
+    *,
     submenu_id: uuid_pkg.UUID,
     submenu_service: SubmenuService = Depends(get_submenu_service),
 ) -> SubmenuDetail:
@@ -67,7 +67,7 @@ async def submenu_create(
     status_code=http.HTTPStatus.OK,
 )
 async def submenu_update(
-    menu_id: uuid_pkg.UUID,
+    *,
     submenu_id: uuid_pkg.UUID,
     data: SubmenuUpdate,
     submenu_service: SubmenuService = Depends(get_submenu_service),

@@ -23,7 +23,5 @@ jobs:
         run: |
           pip install poetry
           poetry install --no-interaction --no-ansi --no-root
-#      - name: migrations
-#        run: poetry run alembic upgrade head
 #      - name: run tests
 #        run: make test

@@ -20,7 +20,7 @@ router = APIRouter(
     status_code=http.HTTPStatus.OK,
 )
 async def dish_list(
-    menu_id: uuid_pkg.UUID,
+    *,
     submenu_id: uuid_pkg.UUID,
     dish_service: DishService = Depends(get_dish_service),
 ) -> DishList:
@@ -34,8 +34,7 @@ async def dish_list(
     status_code=http.HTTPStatus.OK,
 )
 async def dish_detail(
-    menu_id: uuid_pkg.UUID,
-    submenu_id: uuid_pkg.UUID,
+    *,
     dish_id: uuid_pkg.UUID,
     dish_service: DishService = Depends(get_dish_service),
 ) -> DishRead:
@@ -64,8 +63,7 @@ async def dish_create(
     status_code=http.HTTPStatus.OK,
 )
 async def dish_update(
-    menu_id: uuid_pkg.UUID,
-    submenu_id: uuid_pkg.UUID,
+    *,
     dish_id: uuid_pkg.UUID,
     data: DishUpdate,
     dish_service: DishService = Depends(get_dish_service),

@@ -3,7 +3,6 @@ import uuid as uuid_pkg
 from pydantic import condecimal
 from sqlmodel import Field, Relationship, SQLModel
 
-from src.models import Menu, Submenu
 from src.models.mixins import TimestampMixin, UUIDMixin
 
 __all__ = (
@@ -48,7 +47,7 @@ class Dish(TimestampMixin, DishBase, table=True):  # type: ignore
         nullable=False,
         index=True,
     )
-    menu: 'Menu' = Relationship(
+    menu: 'Menu' = Relationship(  # type: ignore
         back_populates='menu_dishes',
     )
 
@@ -58,7 +57,7 @@ class Dish(TimestampMixin, DishBase, table=True):  # type: ignore
         nullable=False,
         index=True,
     )
-    submenu: 'Submenu' = Relationship(
+    submenu: 'Submenu' = Relationship(  # type: ignore
         back_populates='submenu_dishes',
     )
 

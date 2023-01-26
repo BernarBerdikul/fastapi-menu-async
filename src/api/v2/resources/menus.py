@@ -18,9 +18,7 @@ router = APIRouter(
     response_model=MenuList,
     summary='Список меню',
     status_code=http.HTTPStatus.OK,
-    include_in_schema=False,
 )
-# @router.get("", response_model=MenuList)
 async def menu_list(
     menu_service: MenuService = Depends(get_menu_service),
 ) -> MenuList:
