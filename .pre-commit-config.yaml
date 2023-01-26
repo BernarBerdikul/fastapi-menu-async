@@ -9,7 +9,7 @@ repos:
     -   id: check-json  # проверяет синтаксис .json файлов
     -   id: check-case-conflict  # проверяет файлы, которые могут конфликтовать в файловых системах без учета регистра.
     -   id: check-merge-conflict  # проверяет файлы, содержащие конфликтные строки слияния.
-    -   id: double-quote-string-fixer  # заменяет " на '
+#    -   id: double-quote-string-fixer  # заменяет " на '
 
 # Отсортировывает импорты в проекте
 -   repo: https://github.com/pycqa/isort
@@ -20,11 +20,11 @@ repos:
         args: [ --profile, black, --filter-files ]
 
 # Добавляет пропущенные запятые
--   repo: https://github.com/asottile/add-trailing-comma
-    rev: v2.2.2
-    hooks:
-    -   id: add-trailing-comma
-        args: [--py36-plus]
+#-   repo: https://github.com/asottile/add-trailing-comma
+#    rev: v2.2.2
+#    hooks:
+#    -   id: add-trailing-comma
+#        args: [--py36-plus]
 
 # Обновляет синтаксис Python кода в соответствии с последними версиями
 -   repo: https://github.com/asottile/pyupgrade
@@ -52,3 +52,10 @@ repos:
     rev: v0.991
     hooks:
     -   id: mypy
+
+# Форматирует код под PEP8 c помощью black
+-   repo: https://github.com/psf/black
+    rev: stable
+    hooks:
+    - id: black
+      language_version: python3.10

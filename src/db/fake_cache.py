@@ -3,7 +3,7 @@ from typing import Any
 
 from src.db.cache import AbstractCache
 
-__all__ = ('FakeCache',)
+__all__ = ("FakeCache",)
 
 
 @dataclass

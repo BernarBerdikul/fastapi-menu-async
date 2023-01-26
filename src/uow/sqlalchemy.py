@@ -5,7 +5,6 @@ from src.uow import AbstractUnitOfWork
 
 
 class SqlAlchemyUnitOfWork(AbstractUnitOfWork):
-
     def __init__(self, session: AsyncSession):
         self.session = session
         self.menu_repo: MenuRepository = MenuRepository(session=self.session)

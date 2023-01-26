@@ -3,7 +3,6 @@ from typing import Any
 
 
 class AbstractCache(ABC):
-
     @abstractmethod
     async def get(self, name: str) -> Any | None:
         raise NotImplementedError

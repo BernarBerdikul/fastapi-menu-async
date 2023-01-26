@@ -14,15 +14,15 @@ from src.models import (
 from src.schemas import StatusMessage
 
 router = APIRouter(
-    prefix='/menus/{menu_id}/submenus',
-    tags=['submenus'],
+    prefix="/menus/{menu_id}/submenus",
+    tags=["submenus"],
 )
 
 
 @router.get(
-    path='/',
+    path="/",
     response_model=SubmenuList,
-    summary='Список подменю',
+    summary="Список подменю",
     status_code=http.HTTPStatus.OK,
 )
 async def submenu_list(
@@ -33,9 +33,9 @@ async def submenu_list(
 
 
 @router.get(
-    path='/{submenu_id}',
+    path="/{submenu_id}",
     response_model=SubmenuDetail,
-    summary='Конкретное подменю',
+    summary="Конкретное подменю",
     status_code=http.HTTPStatus.OK,
 )
 async def submenu_detail(
@@ -47,9 +47,9 @@ async def submenu_detail(
 
 
 @router.post(
-    path='/',
+    path="/",
     response_model=SubmenuRead,
-    summary='Создать подменю',
+    summary="Создать подменю",
     status_code=http.HTTPStatus.CREATED,
 )
 async def submenu_create(
@@ -61,9 +61,9 @@ async def submenu_create(
 
 
 @router.patch(
-    path='/{submenu_id}',
+    path="/{submenu_id}",
     response_model=SubmenuRead,
-    summary='Обновить подменю',
+    summary="Обновить подменю",
     status_code=http.HTTPStatus.OK,
 )
 async def submenu_update(
@@ -76,9 +76,9 @@ async def submenu_update(
 
 
 @router.delete(
-    path='/{submenu_id}',
+    path="/{submenu_id}",
     response_model=StatusMessage,
-    summary='Удалить подменю',
+    summary="Удалить подменю",
     status_code=http.HTTPStatus.OK,
 )
 async def submenu_delete(
@@ -90,4 +90,4 @@ async def submenu_delete(
         menu_id=menu_id,
         submenu_id=submenu_id,
     )
-    return StatusMessage(status=is_deleted, message='The submenu has been deleted')
+    return StatusMessage(status=is_deleted, message="The submenu has been deleted")

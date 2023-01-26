@@ -6,38 +6,48 @@ from sqlalchemy.orm import joinedload
 from src.models import Submenu, SubmenuCreate, SubmenuUpdate
 from src.repositories import AbstractRepository
 
-__all__ = ('SubmenuRepository',)
+__all__ = ("SubmenuRepository",)
 
 
 class SubmenuRepository(AbstractRepository):
     model: type[Submenu] = Submenu  # type: ignore
 
     async def list(self, menu_id: uuid_pkg.UUID) -> list[Submenu]:
-        statement = select(
-            self.model.id,
-            self.model.title,
-            self.model.description,
-            func.count(self.model.submenu_dishes).label('dishes_count'),
-        ).outerjoin(
-            self.model.submenu_dishes,
-        ).where(
-            self.model.parent_id == menu_id,
-        ).group_by(self.model.id)
+        statement = (
+            select(
+                self.model.id,
+                self.model.title,
+                self.model.description,
+                func.count(self.model.submenu_dishes).label("dishes_count"),
+            )
+            .outerjoin(
+                self.model.submenu_dishes,
+            )
+            .where(
+                self.model.parent_id == menu_id,
+            )
+            .group_by(self.model.id)
+        )
         results = await self.session.execute(statement)
         submenus: list[Submenu] = results.all()
         return submenus
 
     async def get(self, submenu_id: uuid_pkg.UUID) -> Submenu | None:
-        statement = select(
-            self.model.id,
-            self.model.title,
-            self.model.description,
-            func.count(self.model.submenu_dishes).label('dishes_count'),
-        ).outerjoin(
-            self.model.submenu_dishes,
-        ).where(
-            self.model.id == submenu_id,
-        ).group_by(self.model.id)
+        statement = (
+            select(
+                self.model.id,
+                self.model.title,
+                self.model.description,
+                func.count(self.model.submenu_dishes).label("dishes_count"),
+            )
+            .outerjoin(
+                self.model.submenu_dishes,
+            )
+            .where(
+                self.model.id == submenu_id,
+            )
+            .group_by(self.model.id)
+        )
         results = await self.session.execute(statement=statement)
         submenu: Submenu | None = results.one_or_none()
         return submenu
@@ -55,7 +65,11 @@ class SubmenuRepository(AbstractRepository):
         await self.session.refresh(new_submenu)
         return new_submenu
 
-    async def update(self, submenu_id: uuid_pkg.UUID, data: SubmenuUpdate) -> Submenu | None:
+    async def update(
+        self,
+        submenu_id: uuid_pkg.UUID,
+        data: SubmenuUpdate,
+    ) -> Submenu | None:
         if updated_submenu := await self.__get(submenu_id=submenu_id):
             values = data.dict(exclude_unset=True)
             for k, v in values.items():
@@ -66,12 +80,16 @@ class SubmenuRepository(AbstractRepository):
         return updated_submenu
 
     async def delete(self, submenu_id: uuid_pkg.UUID) -> bool:
-        statement = select(
-            self.model,
-        ).options(
-            joinedload(self.model.submenu_dishes),
-        ).where(
-            self.model.id == submenu_id,
+        statement = (
+            select(
+                self.model,
+            )
+            .options(
+                joinedload(self.model.submenu_dishes),
+            )
+            .where(
+                self.model.id == submenu_id,
+            )
         )
         submenu = await self.session.scalar(statement)
         if submenu:

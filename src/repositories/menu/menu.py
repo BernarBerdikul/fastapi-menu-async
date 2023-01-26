@@ -6,59 +6,77 @@ from sqlalchemy.orm import joinedload
 from src.models import Dish, Menu, MenuCreate, MenuUpdate, Submenu
 from src.repositories import AbstractRepository
 
-__all__ = ('MenuRepository',)
+__all__ = ("MenuRepository",)
 
 
 class MenuRepository(AbstractRepository):
     model: type[Menu] = Menu
 
     async def list(self) -> list[Menu]:
-        statement = sa.select(
-            self.model.id,
-            self.model.title,
-            self.model.description,
-            sa.func.coalesce(
-                sa.func.count(
-                    sa.func.distinct(
-                        Submenu.id,
+        statement = (
+            sa.select(
+                self.model.id,
+                self.model.title,
+                self.model.description,
+                sa.func.coalesce(
+                    sa.func.count(
+                        sa.func.distinct(
+                            Submenu.id,
+                        ),
                     ),
-                ),
-                0,
-            ).label('submenus_count'),
-            sa.func.coalesce(sa.func.count(Dish.id), 0).label('dishes_count'),
-        ).outerjoin(
-            Submenu,
-            self.model.id == Submenu.parent_id,
-        ).outerjoin(
-            Dish,
-            Submenu.id == Dish.submenu_id,
-        ).group_by(Menu.id)
+                    0,
+                ).label("submenus_count"),
+                sa.func.coalesce(
+                    sa.func.count(Dish.id),
+                    0,
+                ).label("dishes_count"),
+            )
+            .outerjoin(
+                Submenu,
+                self.model.id == Submenu.parent_id,
+            )
+            .outerjoin(
+                Dish,
+                Submenu.id == Dish.submenu_id,
+            )
+            .group_by(Menu.id)
+        )
         results = await self.session.execute(statement)
         menus: list[Menu] = results.all()
         return menus
 
     async def get(self, menu_id: uuid_pkg.UUID) -> Menu | None:
-        statement = sa.select(
-            self.model.id,
-            self.model.title,
-            self.model.description,
-            sa.func.coalesce(
-                sa.func.count(
-                    sa.func.distinct(
-                        Submenu.id,
+        statement = (
+            sa.select(
+                self.model.id,
+                self.model.title,
+                self.model.description,
+                sa.func.coalesce(
+                    sa.func.count(
+                        sa.func.distinct(
+                            Submenu.id,
+                        ),
                     ),
-                ), 0,
-            ).label('submenus_count'),
-            sa.func.coalesce(sa.func.count(Dish.id), 0).label('dishes_count'),
-        ).outerjoin(
-            Submenu,
-            self.model.id == Submenu.parent_id,
-        ).outerjoin(
-            Dish,
-            Submenu.id == Dish.submenu_id,
-        ).where(
-            self.model.id == menu_id,
-        ).group_by(Menu.id)
+                    0,
+                ).label("submenus_count"),
+                sa.func.coalesce(
+                    sa.func.count(Dish.id),
+                    0,
+                ).label("dishes_count"),
+            )
+            .outerjoin(
+                Submenu,
+                self.model.id == Submenu.parent_id,
+            )
+            .outerjoin(
+                Dish,
+                Submenu.id == Dish.submenu_id,
+            )
+            .where(
+                self.model.id == menu_id,
+            )
+            .group_by(Menu.id)
+        )
         results = await self.session.execute(statement=statement)
         menu: Menu | None = results.one_or_none()
         return menu
@@ -87,13 +105,17 @@ class MenuRepository(AbstractRepository):
         return updated_menu
 
     async def delete(self, menu_id: uuid_pkg.UUID) -> bool:
-        statement = sa.select(
-            self.model,
-        ).options(
-            joinedload(self.model.children),
-            joinedload(self.model.menu_dishes),
-        ).where(
-            self.model.id == menu_id,
+        statement = (
+            sa.select(
+                self.model,
+            )
+            .options(
+                joinedload(self.model.children),
+                joinedload(self.model.menu_dishes),
+            )
+            .where(
+                self.model.id == menu_id,
+            )
         )
         menu = await self.session.scalar(statement)
         if menu:

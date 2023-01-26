@@ -7,7 +7,7 @@ from aioredis import Redis
 from src import settings
 from src.db.cache import AbstractCache
 
-__all__ = ('RedisCache',)
+__all__ = ("RedisCache",)
 
 
 @dataclass
@@ -18,7 +18,12 @@ class RedisCache(AbstractCache):
         data = await self.cache.get(name=name)
         return orjson.loads(data) if data else None
 
-    async def set(self, name: str, value: Any, expire: int = settings.redis.cache_expire_time) -> None:
+    async def set(
+        self,
+        name: str,
+        value: Any,
+        expire: int = settings.redis.cache_expire_time,
+    ) -> None:
         data = value
         if not isinstance(value, bytes | str):
             data = orjson.dumps(value)

@@ -8,15 +8,15 @@ from src.models import DishCreate, DishList, DishRead, DishUpdate
 from src.schemas import StatusMessage
 
 router = APIRouter(
-    prefix='/menus/{menu_id}/submenus/{submenu_id}/dishes',
-    tags=['dishes'],
+    prefix="/menus/{menu_id}/submenus/{submenu_id}/dishes",
+    tags=["dishes"],
 )
 
 
 @router.get(
-    path='/',
+    path="/",
     response_model=DishList,
-    summary='Список блюд',
+    summary="Список блюд",
     status_code=http.HTTPStatus.OK,
 )
 async def dish_list(
@@ -28,9 +28,9 @@ async def dish_list(
 
 
 @router.get(
-    path='/{dish_id}',
+    path="/{dish_id}",
     response_model=DishRead,
-    summary='Конкретное блюдо',
+    summary="Конкретное блюдо",
     status_code=http.HTTPStatus.OK,
 )
 async def dish_detail(
@@ -42,9 +42,9 @@ async def dish_detail(
 
 
 @router.post(
-    path='/',
+    path="/",
     response_model=DishRead,
-    summary='Создать блюдо',
+    summary="Создать блюдо",
     status_code=http.HTTPStatus.CREATED,
 )
 async def dish_create(
@@ -57,9 +57,9 @@ async def dish_create(
 
 
 @router.patch(
-    path='/{dish_id}',
+    path="/{dish_id}",
     response_model=DishRead,
-    summary='Обновить блюдо',
+    summary="Обновить блюдо",
     status_code=http.HTTPStatus.OK,
 )
 async def dish_update(
@@ -72,9 +72,9 @@ async def dish_update(
 
 
 @router.delete(
-    path='/{dish_id}',
+    path="/{dish_id}",
     response_model=StatusMessage,
-    summary='Удалить блюдо',
+    summary="Удалить блюдо",
     status_code=http.HTTPStatus.OK,
 )
 async def dish_delete(
@@ -88,4 +88,4 @@ async def dish_delete(
         submenu_id=submenu_id,
         dish_id=dish_id,
     )
-    return StatusMessage(status=is_deleted, message='The dish has been deleted')
+    return StatusMessage(status=is_deleted, message="The dish has been deleted")

@@ -30,12 +30,11 @@ target_metadata = SQLModel.metadata
 # ... etc.
 
 target_metadata.naming_convention = {
-    'ix': 'ix_%(column_0_label)s',
-    'uq': 'uq_%(table_name)s_%(column_0_name)s',
-    'ck': 'ck_%(table_name)s_%(constraint_name)s',
-    'fk': 'fk_%(table_name)s_%(column_0_name)'
-          's_%(referred_table_name)s',
-    'pk': 'pk_%(table_name)s',
+    "ix": "ix_%(column_0_label)s",
+    "uq": "uq_%(table_name)s_%(column_0_name)s",
+    "ck": "ck_%(table_name)s_%(constraint_name)s",
+    "fk": "fk_%(table_name)s_%(column_0_name)" "s_%(referred_table_name)s",
+    "pk": "pk_%(table_name)s",
 }
 
 exclude_tables = settings.app.db_exclude_tables
@@ -48,20 +47,20 @@ def filter_db_objects(
     *args,  # noqa: indirect usage
     **kwargs,  # noqa: indirect usage
 ) -> bool:
-    if type_ == 'table':
+    if type_ == "table":
         return name not in exclude_tables
-    if type_ == 'index' and name.startswith('idx') and name.endswith('geom'):
+    if type_ == "index" and name.startswith("idx") and name.endswith("geom"):
         return False
     return True
 
 
 def run_migrations_offline() -> None:
-    url = config.get_main_option('sqlalchemy.url')
+    url = config.get_main_option("sqlalchemy.url")
     context.configure(
         url=url,
         target_metadata=target_metadata,
         literal_binds=True,
-        dialect_opts={'paramstyle': 'named'},
+        dialect_opts={"paramstyle": "named"},
         include_object=filter_db_objects,
     )
 
@@ -83,12 +82,12 @@ def do_run_migrations(connection) -> None:
 
 async def run_migrations_online() -> None:
     config_section = config.get_section(config.config_ini_section)
-    config_section['sqlalchemy.url'] = settings.postgres.async_dsn
+    config_section["sqlalchemy.url"] = settings.postgres.async_dsn
 
     connectable = AsyncEngine(
         engine_from_config(
             config_section,
-            prefix='sqlalchemy.',
+            prefix="sqlalchemy.",
             poolclass=pool.NullPool,
             future=True,
         ),

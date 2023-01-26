@@ -11,8 +11,8 @@ from src.db.db import get_async_session
 from src.models import DishCreate, DishList, DishRead, DishUpdate
 
 __all__ = (
-    'DishService',
-    'get_dish_service',
+    "DishService",
+    "get_dish_service",
 )
 
 from src.uow import SqlAlchemyUnitOfWork
@@ -20,7 +20,7 @@ from src.uow import SqlAlchemyUnitOfWork
 
 @dataclass
 class DishService(ServiceMixin):
-    cache_key: str = field(default='dish-list')
+    cache_key: str = field(default="dish-list")
 
     async def get_list(self, submenu_id: uuid_pkg.UUID) -> DishList:
         """Получить список блюд."""
@@ -30,35 +30,44 @@ class DishService(ServiceMixin):
 
             dishes = await self.uow.dish_repo.list(submenu_id=submenu_id)
             if serialized_dishes := DishList.from_orm(dishes):
-                await self.cache.set(name=self.cache_key, value=serialized_dishes.json())
+                await self.cache.set(
+                    name=self.cache_key,
+                    value=serialized_dishes.json(),
+                )
         return serialized_dishes
 
     async def get_detail(self, dish_id: uuid_pkg.UUID) -> DishRead:
         """Получить детальную информацию по блюду."""
         async with self.uow:
-            if cached_dish := await self.cache.get(name=f'{dish_id}'):
+            if cached_dish := await self.cache.get(name=f"{dish_id}"):
                 return cached_dish
 
             dish = await self.uow.dish_repo.get(dish_id=dish_id)
             if not dish:
                 raise HTTPException(
-                    status_code=HTTPStatus.NOT_FOUND, detail='dish not found',
+                    status_code=HTTPStatus.NOT_FOUND,
+                    detail="dish not found",
                 )
 
             if serialized_dish := DishRead.from_orm(dish):
-                await self.cache.set(name=f'{dish_id}', value=serialized_dish.json())
+                await self.cache.set(name=f"{dish_id}", value=serialized_dish.json())
         return serialized_dish
 
-    async def create(self, menu_id: uuid_pkg.UUID, submenu_id: uuid_pkg.UUID, data: DishCreate) -> DishRead:
+    async def create(
+        self,
+        menu_id: uuid_pkg.UUID,
+        submenu_id: uuid_pkg.UUID,
+        data: DishCreate,
+    ) -> DishRead:
         """Создать блюдо."""
         async with self.uow:
             data.menu_id = menu_id
             data.submenu_id = submenu_id
             new_dish = await self.uow.dish_repo.add(data=data)
-            await self.cache.delete(name=f'{menu_id}')
-            await self.cache.delete(name=f'{submenu_id}')
-            await self.cache.delete(name='menu-list')
-            await self.cache.delete(name='submenu-list')
+            await self.cache.delete(name=f"{menu_id}")
+            await self.cache.delete(name=f"{submenu_id}")
+            await self.cache.delete(name="menu-list")
+            await self.cache.delete(name="submenu-list")
             await self.cache.delete(name=self.cache_key)
         return DishRead.from_orm(new_dish)
 
@@ -68,19 +77,25 @@ class DishService(ServiceMixin):
             updated_dish = await self.uow.dish_repo.update(dish_id=dish_id, data=data)
             if not updated_dish:
                 raise HTTPException(
-                    status_code=HTTPStatus.NOT_FOUND, detail='dish not found',
+                    status_code=HTTPStatus.NOT_FOUND,
+                    detail="dish not found",
                 )
-            await self.cache.delete(name=f'{dish_id}')
+            await self.cache.delete(name=f"{dish_id}")
             await self.cache.delete(name=self.cache_key)
         return DishRead.from_orm(updated_dish)
 
-    async def delete(self, menu_id: uuid_pkg.UUID, submenu_id: uuid_pkg.UUID, dish_id: uuid_pkg.UUID) -> bool:
+    async def delete(
+        self,
+        menu_id: uuid_pkg.UUID,
+        submenu_id: uuid_pkg.UUID,
+        dish_id: uuid_pkg.UUID,
+    ) -> bool:
         """Удалить блюдо."""
         async with self.uow:
             is_deleted = await self.uow.dish_repo.delete(dish_id=dish_id)
-            await self.cache.delete(name=f'{dish_id}')
-            await self.cache.delete(name=f'{submenu_id}')
-            await self.cache.delete(name=f'{menu_id}')
+            await self.cache.delete(name=f"{dish_id}")
+            await self.cache.delete(name=f"{submenu_id}")
+            await self.cache.delete(name=f"{menu_id}")
             await self.cache.delete(name=self.cache_key)
         return is_deleted
 

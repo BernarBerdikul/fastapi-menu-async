@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 from src.models import Submenu, SubmenuCreate, SubmenuUpdate
 from src.repositories import AbstractRepository
 
-__all__ = ('FakeSubmenuRepository',)
+__all__ = ("FakeSubmenuRepository",)
 
 
 @dataclass
@@ -24,7 +24,11 @@ class FakeSubmenuRepository(AbstractRepository):
         self.batches.append(new_submenu)
         return new_submenu
 
-    async def update(self, submenu_id: uuid_pkg.UUID, data: SubmenuUpdate) -> Submenu | None:
+    async def update(
+        self,
+        submenu_id: uuid_pkg.UUID,
+        data: SubmenuUpdate,
+    ) -> Submenu | None:
         if updated_submenu := await self.get(submenu_id=submenu_id):
             values = data.dict(exclude_unset=True)
             for k, v in values.items():

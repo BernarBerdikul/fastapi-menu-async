@@ -11,8 +11,8 @@ from src.db.db import get_async_session
 from src.models import MenuCreate, MenuList, MenuRead, MenuUpdate
 
 __all__ = (
-    'MenuService',
-    'get_menu_service',
+    "MenuService",
+    "get_menu_service",
 )
 
 from src.repositories import MenuRepository
@@ -20,7 +20,7 @@ from src.repositories import MenuRepository
 
 @dataclass
 class MenuService(ServiceMixin):
-    cache_key: str = field(default='menu-list')
+    cache_key: str = field(default="menu-list")
 
     async def get_list(self) -> MenuList:
         """Получить список меню."""
@@ -34,17 +34,18 @@ class MenuService(ServiceMixin):
 
     async def get_detail(self, menu_id: uuid_pkg.UUID) -> MenuRead:
         """Получить детальную информацию по меню."""
-        if cached_menu := await self.cache.get(name=f'{menu_id}'):
+        if cached_menu := await self.cache.get(name=f"{menu_id}"):
             return cached_menu
 
         menu = await self.repository.get(menu_id=menu_id)
         if not menu:
             raise HTTPException(
-                status_code=HTTPStatus.NOT_FOUND, detail='menu not found',
+                status_code=HTTPStatus.NOT_FOUND,
+                detail="menu not found",
             )
 
         if serialized_menu := MenuRead.from_orm(menu):
-            await self.cache.set(name=f'{menu_id}', value=serialized_menu.json())
+            await self.cache.set(name=f"{menu_id}", value=serialized_menu.json())
         return serialized_menu
 
     async def create(self, data: MenuCreate) -> MenuRead:
@@ -58,16 +59,17 @@ class MenuService(ServiceMixin):
         updated_menu = await self.repository.update(menu_id=menu_id, data=data)
         if not updated_menu:
             raise HTTPException(
-                status_code=HTTPStatus.NOT_FOUND, detail='menu not found',
+                status_code=HTTPStatus.NOT_FOUND,
+                detail="menu not found",
             )
-        await self.cache.delete(name=f'{menu_id}')
+        await self.cache.delete(name=f"{menu_id}")
         await self.cache.delete(name=self.cache_key)
         return MenuRead.from_orm(updated_menu)
 
     async def delete(self, menu_id: uuid_pkg.UUID) -> bool:
         """Удалить меню."""
         is_deleted = await self.repository.delete(menu_id=menu_id)
-        await self.cache.delete(name=f'{menu_id}')
+        await self.cache.delete(name=f"{menu_id}")
         await self.cache.delete(name=self.cache_key)
         return is_deleted
 

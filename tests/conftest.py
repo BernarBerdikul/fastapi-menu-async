@@ -11,7 +11,7 @@ from src.db.db import async_engine
 from src.main import app
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def event_loop(request) -> Generator:  # noqa: indirect usage
     loop = asyncio.get_event_loop_policy().new_event_loop()
     yield loop
@@ -20,14 +20,16 @@ def event_loop(request) -> Generator:  # noqa: indirect usage
 
 @pytest_asyncio.fixture
 async def async_client() -> AsyncClient:
-    async with AsyncClient(app=app, base_url='http://test') as client:
+    async with AsyncClient(app=app, base_url="http://test") as client:
         yield client
 
 
-@pytest_asyncio.fixture(scope='function')
+@pytest_asyncio.fixture(scope="function")
 async def async_session() -> AsyncSession:
     session = sessionmaker(
-        bind=async_engine, expire_on_commit=False, class_=AsyncSession,
+        bind=async_engine,
+        expire_on_commit=False,
+        class_=AsyncSession,
     )
     async with session() as session:
         yield session

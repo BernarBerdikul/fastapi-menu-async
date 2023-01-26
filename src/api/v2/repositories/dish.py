@@ -4,7 +4,7 @@ from sqlalchemy import select
 
 from src.models import Dish, DishCreate, DishUpdate
 
-__all__ = ('DishRepository',)
+__all__ = ("DishRepository",)
 
 from src.repositories import AbstractRepository
 
@@ -13,9 +13,7 @@ class DishRepository(AbstractRepository):
     model: type[Dish] = Dish  # type: ignore
 
     async def list(self, submenu_id: uuid_pkg.UUID) -> list[Dish]:
-        statement = select(
-            self.model,
-        ).where(
+        statement = select(self.model).where(
             self.model.submenu_id == submenu_id,
         )
         results = await self.session.execute(statement)

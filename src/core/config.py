@@ -29,7 +29,7 @@ class Postgres(BaseSettings):
         dbname: str = self.dbname
         user: str = self.user
         password: str = self.password
-        return f'postgresql+asyncpg://{user}:{password}@{host}:{port}/{dbname}'
+        return f"postgresql+asyncpg://{user}:{password}@{host}:{port}/{dbname}"
 
 
 class Redis(BaseSettings):
@@ -47,9 +47,9 @@ class Settings(BaseSettings):
     redis: Redis
 
 
-config_file = os.getenv('CONFIG_FILE') or 'config.local.yaml'
+config_file = os.getenv("CONFIG_FILE") or "config.local.yaml"
 settings_path = Path(__file__).parent / config_file
-with settings_path.open('r') as f:
+with settings_path.open("r") as f:
     yaml_settings = yaml.load(f, Loader=yaml.Loader)
 
 

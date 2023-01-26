@@ -8,15 +8,15 @@ from src.models import MenuCreate, MenuList, MenuRead, MenuUpdate
 from src.schemas import StatusMessage
 
 router = APIRouter(
-    prefix='/menus',
-    tags=['menus'],
+    prefix="/menus",
+    tags=["menus"],
 )
 
 
 @router.get(
-    path='/',
+    path="/",
     response_model=MenuList,
-    summary='Список меню',
+    summary="Список меню",
     status_code=http.HTTPStatus.OK,
 )
 async def menu_list(
@@ -26,9 +26,9 @@ async def menu_list(
 
 
 @router.get(
-    path='/{menu_id}',
+    path="/{menu_id}",
     response_model=MenuRead,
-    summary='Конкретное меню',
+    summary="Конкретное меню",
     status_code=http.HTTPStatus.OK,
 )
 async def menu_detail(
@@ -39,9 +39,9 @@ async def menu_detail(
 
 
 @router.post(
-    path='/',
+    path="/",
     response_model=MenuRead,
-    summary='Создать меню',
+    summary="Создать меню",
     status_code=http.HTTPStatus.CREATED,
 )
 async def menu_create(
@@ -52,9 +52,9 @@ async def menu_create(
 
 
 @router.patch(
-    path='/{menu_id}',
+    path="/{menu_id}",
     response_model=MenuRead,
-    summary='Обновить меню',
+    summary="Обновить меню",
     status_code=http.HTTPStatus.OK,
 )
 async def menu_update(
@@ -66,9 +66,9 @@ async def menu_update(
 
 
 @router.delete(
-    path='/{menu_id}',
+    path="/{menu_id}",
     response_model=StatusMessage,
-    summary='Удалить меню',
+    summary="Удалить меню",
     status_code=http.HTTPStatus.OK,
 )
 async def menu_delete(
@@ -76,4 +76,4 @@ async def menu_delete(
     menu_service: MenuService = Depends(get_menu_service),
 ):
     is_deleted: bool = await menu_service.delete(menu_id=menu_id)
-    return StatusMessage(status=is_deleted, message='The menu has been deleted')
+    return StatusMessage(status=is_deleted, message="The menu has been deleted")

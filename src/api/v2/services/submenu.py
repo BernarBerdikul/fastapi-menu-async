@@ -17,8 +17,8 @@ from src.models import (
 )
 
 __all__ = (
-    'SubmenuService',
-    'get_submenu_service',
+    "SubmenuService",
+    "get_submenu_service",
 )
 
 from src.uow import SqlAlchemyUnitOfWork
@@ -26,7 +26,7 @@ from src.uow import SqlAlchemyUnitOfWork
 
 @dataclass
 class SubmenuService(ServiceMixin):
-    cache_key: str = field(default='submenu-list')
+    cache_key: str = field(default="submenu-list")
 
     async def get_list(self, menu_id: uuid_pkg.UUID) -> SubmenuList:
         """Получить список подменю."""
@@ -36,23 +36,30 @@ class SubmenuService(ServiceMixin):
 
             submenus = await self.uow.submenu_repo.list(menu_id=menu_id)
             if serialized_submenus := SubmenuList.from_orm(submenus):
-                await self.cache.set(name=self.cache_key, value=serialized_submenus.json())
+                await self.cache.set(
+                    name=self.cache_key,
+                    value=serialized_submenus.json(),
+                )
         return serialized_submenus
 
     async def get_detail(self, submenu_id: uuid_pkg.UUID) -> SubmenuDetail:
         """Получить детальную информацию по подменю."""
         async with self.uow:
-            if cached_submenu := await self.cache.get(name=f'{submenu_id}'):
+            if cached_submenu := await self.cache.get(name=f"{submenu_id}"):
                 return cached_submenu
 
             submenu = await self.uow.submenu_repo.get(submenu_id=submenu_id)
             if not submenu:
                 raise HTTPException(
-                    status_code=HTTPStatus.NOT_FOUND, detail='submenu not found',
+                    status_code=HTTPStatus.NOT_FOUND,
+                    detail="submenu not found",
                 )
 
             if serialized_submenu := SubmenuDetail.from_orm(submenu):
-                await self.cache.set(name=f'{submenu_id}', value=serialized_submenu.json())
+                await self.cache.set(
+                    name=f"{submenu_id}",
+                    value=serialized_submenu.json(),
+                )
         return serialized_submenu
 
     async def create(self, menu_id: uuid_pkg.UUID, data: SubmenuCreate) -> SubmenuRead:
@@ -60,20 +67,28 @@ class SubmenuService(ServiceMixin):
         async with self.uow:
             data.parent_id = menu_id
             new_submenu = await self.uow.submenu_repo.add(data=data)
-            await self.cache.delete(name=f'{menu_id}')
-            await self.cache.delete(name='menu-list')
+            await self.cache.delete(name=f"{menu_id}")
+            await self.cache.delete(name="menu-list")
             await self.cache.delete(name=self.cache_key)
         return SubmenuRead.from_orm(new_submenu)
 
-    async def update(self, submenu_id: uuid_pkg.UUID, data: SubmenuUpdate) -> SubmenuRead:
+    async def update(
+        self,
+        submenu_id: uuid_pkg.UUID,
+        data: SubmenuUpdate,
+    ) -> SubmenuRead:
         """Обновить подменю."""
         async with self.uow:
-            updated_submenu = await self.uow.submenu_repo.update(submenu_id=submenu_id, data=data)
+            updated_submenu = await self.uow.submenu_repo.update(
+                submenu_id=submenu_id,
+                data=data,
+            )
             if not updated_submenu:
                 raise HTTPException(
-                    status_code=HTTPStatus.NOT_FOUND, detail='submenu not found',
+                    status_code=HTTPStatus.NOT_FOUND,
+                    detail="submenu not found",
                 )
-            await self.cache.delete(name=f'{submenu_id}')
+            await self.cache.delete(name=f"{submenu_id}")
             await self.cache.delete(name=self.cache_key)
         return SubmenuRead.from_orm(updated_submenu)
 
@@ -81,8 +96,8 @@ class SubmenuService(ServiceMixin):
         """Удалить подменю."""
         async with self.uow:
             is_deleted = await self.uow.submenu_repo.delete(submenu_id=submenu_id)
-            await self.cache.delete(name=f'{submenu_id}')
-            await self.cache.delete(name=f'{menu_id}')
+            await self.cache.delete(name=f"{submenu_id}")
+            await self.cache.delete(name=f"{menu_id}")
             await self.cache.delete(name=self.cache_key)
         return is_deleted
 

@@ -2,15 +2,15 @@ import orjson
 from pydantic import BaseModel
 
 __all__ = (
-    'FastJsonModel',
-    'CamelJsonModel',
-    'CamelJsonOrmModel',
+    "FastJsonModel",
+    "CamelJsonModel",
+    "CamelJsonOrmModel",
 )
 
 
 def to_camel(string: str) -> str:
-    new_str = ''.join(word.capitalize() for word in string.split('_'))
-    return f'{new_str[0].lower()}{new_str[1:]}'
+    new_str = "".join(word.capitalize() for word in string.split("_"))
+    return f"{new_str[0].lower()}{new_str[1:]}"
 
 
 def orjson_dumps(v, *, default):

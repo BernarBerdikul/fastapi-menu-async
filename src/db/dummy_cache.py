@@ -3,12 +3,11 @@ from typing import Any
 
 from src.db.cache import AbstractCache
 
-__all__ = ('DummyCache',)
+__all__ = ("DummyCache",)
 
 
 @dataclass
 class DummyCache(AbstractCache):
-
     async def get(self, name: str) -> dict | None:
         return None
 

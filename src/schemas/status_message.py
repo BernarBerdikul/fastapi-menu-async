@@ -1,4 +1,4 @@
-__all__ = ('StatusMessage',)
+__all__ = ("StatusMessage",)
 
 from src.schemas.base import CamelJsonModel
 
